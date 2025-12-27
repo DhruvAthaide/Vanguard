@@ -30,16 +30,17 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _descriptionMeta = const VerificationMeta(
-    'description',
+  static const VerificationMeta _priorityMeta = const VerificationMeta(
+    'priority',
   );
   @override
-  late final GeneratedColumn<String> description = GeneratedColumn<String>(
-    'description',
+  late final GeneratedColumn<String> priority = GeneratedColumn<String>(
+    'priority',
     aliasedName,
-    true,
+    false,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
+    defaultValue: const Constant('medium'),
   );
   static const VerificationMeta _startDateMeta = const VerificationMeta(
     'startDate',
@@ -67,7 +68,7 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
   List<GeneratedColumn> get $columns => [
     id,
     name,
-    description,
+    priority,
     startDate,
     endDate,
   ];
@@ -94,13 +95,10 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
-    if (data.containsKey('description')) {
+    if (data.containsKey('priority')) {
       context.handle(
-        _descriptionMeta,
-        description.isAcceptableOrUnknown(
-          data['description']!,
-          _descriptionMeta,
-        ),
+        _priorityMeta,
+        priority.isAcceptableOrUnknown(data['priority']!, _priorityMeta),
       );
     }
     if (data.containsKey('start_date')) {
@@ -134,10 +132,10 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
         DriftSqlType.string,
         data['${effectivePrefix}name'],
       )!,
-      description: attachedDatabase.typeMapping.read(
+      priority: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}description'],
-      ),
+        data['${effectivePrefix}priority'],
+      )!,
       startDate: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}start_date'],
@@ -158,13 +156,13 @@ class $ProjectsTable extends Projects with TableInfo<$ProjectsTable, Project> {
 class Project extends DataClass implements Insertable<Project> {
   final int id;
   final String name;
-  final String? description;
+  final String priority;
   final DateTime startDate;
   final DateTime? endDate;
   const Project({
     required this.id,
     required this.name,
-    this.description,
+    required this.priority,
     required this.startDate,
     this.endDate,
   });
@@ -173,9 +171,7 @@ class Project extends DataClass implements Insertable<Project> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
-    if (!nullToAbsent || description != null) {
-      map['description'] = Variable<String>(description);
-    }
+    map['priority'] = Variable<String>(priority);
     map['start_date'] = Variable<DateTime>(startDate);
     if (!nullToAbsent || endDate != null) {
       map['end_date'] = Variable<DateTime>(endDate);
@@ -187,9 +183,7 @@ class Project extends DataClass implements Insertable<Project> {
     return ProjectsCompanion(
       id: Value(id),
       name: Value(name),
-      description: description == null && nullToAbsent
-          ? const Value.absent()
-          : Value(description),
+      priority: Value(priority),
       startDate: Value(startDate),
       endDate: endDate == null && nullToAbsent
           ? const Value.absent()
@@ -205,7 +199,7 @@ class Project extends DataClass implements Insertable<Project> {
     return Project(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      description: serializer.fromJson<String?>(json['description']),
+      priority: serializer.fromJson<String>(json['priority']),
       startDate: serializer.fromJson<DateTime>(json['startDate']),
       endDate: serializer.fromJson<DateTime?>(json['endDate']),
     );
@@ -216,7 +210,7 @@ class Project extends DataClass implements Insertable<Project> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
-      'description': serializer.toJson<String?>(description),
+      'priority': serializer.toJson<String>(priority),
       'startDate': serializer.toJson<DateTime>(startDate),
       'endDate': serializer.toJson<DateTime?>(endDate),
     };
@@ -225,13 +219,13 @@ class Project extends DataClass implements Insertable<Project> {
   Project copyWith({
     int? id,
     String? name,
-    Value<String?> description = const Value.absent(),
+    String? priority,
     DateTime? startDate,
     Value<DateTime?> endDate = const Value.absent(),
   }) => Project(
     id: id ?? this.id,
     name: name ?? this.name,
-    description: description.present ? description.value : this.description,
+    priority: priority ?? this.priority,
     startDate: startDate ?? this.startDate,
     endDate: endDate.present ? endDate.value : this.endDate,
   );
@@ -239,9 +233,7 @@ class Project extends DataClass implements Insertable<Project> {
     return Project(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
-      description: data.description.present
-          ? data.description.value
-          : this.description,
+      priority: data.priority.present ? data.priority.value : this.priority,
       startDate: data.startDate.present ? data.startDate.value : this.startDate,
       endDate: data.endDate.present ? data.endDate.value : this.endDate,
     );
@@ -252,7 +244,7 @@ class Project extends DataClass implements Insertable<Project> {
     return (StringBuffer('Project(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('description: $description, ')
+          ..write('priority: $priority, ')
           ..write('startDate: $startDate, ')
           ..write('endDate: $endDate')
           ..write(')'))
@@ -260,14 +252,14 @@ class Project extends DataClass implements Insertable<Project> {
   }
 
   @override
-  int get hashCode => Object.hash(id, name, description, startDate, endDate);
+  int get hashCode => Object.hash(id, name, priority, startDate, endDate);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Project &&
           other.id == this.id &&
           other.name == this.name &&
-          other.description == this.description &&
+          other.priority == this.priority &&
           other.startDate == this.startDate &&
           other.endDate == this.endDate);
 }
@@ -275,20 +267,20 @@ class Project extends DataClass implements Insertable<Project> {
 class ProjectsCompanion extends UpdateCompanion<Project> {
   final Value<int> id;
   final Value<String> name;
-  final Value<String?> description;
+  final Value<String> priority;
   final Value<DateTime> startDate;
   final Value<DateTime?> endDate;
   const ProjectsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
-    this.description = const Value.absent(),
+    this.priority = const Value.absent(),
     this.startDate = const Value.absent(),
     this.endDate = const Value.absent(),
   });
   ProjectsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
-    this.description = const Value.absent(),
+    this.priority = const Value.absent(),
     required DateTime startDate,
     this.endDate = const Value.absent(),
   }) : name = Value(name),
@@ -296,14 +288,14 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
   static Insertable<Project> custom({
     Expression<int>? id,
     Expression<String>? name,
-    Expression<String>? description,
+    Expression<String>? priority,
     Expression<DateTime>? startDate,
     Expression<DateTime>? endDate,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
-      if (description != null) 'description': description,
+      if (priority != null) 'priority': priority,
       if (startDate != null) 'start_date': startDate,
       if (endDate != null) 'end_date': endDate,
     });
@@ -312,14 +304,14 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
   ProjectsCompanion copyWith({
     Value<int>? id,
     Value<String>? name,
-    Value<String?>? description,
+    Value<String>? priority,
     Value<DateTime>? startDate,
     Value<DateTime?>? endDate,
   }) {
     return ProjectsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
-      description: description ?? this.description,
+      priority: priority ?? this.priority,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
     );
@@ -334,8 +326,8 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
-    if (description.present) {
-      map['description'] = Variable<String>(description.value);
+    if (priority.present) {
+      map['priority'] = Variable<String>(priority.value);
     }
     if (startDate.present) {
       map['start_date'] = Variable<DateTime>(startDate.value);
@@ -351,7 +343,7 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
     return (StringBuffer('ProjectsCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('description: $description, ')
+          ..write('priority: $priority, ')
           ..write('startDate: $startDate, ')
           ..write('endDate: $endDate')
           ..write(')'))
@@ -423,7 +415,8 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
     aliasedName,
     false,
     type: DriftSqlType.string,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('Unassigned'),
   );
   static const VerificationMeta _deadlineMeta = const VerificationMeta(
     'deadline',
@@ -444,7 +437,7 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
-    defaultValue: const Constant("todo"),
+    defaultValue: const Constant('todo'),
   );
   @override
   List<GeneratedColumn> get $columns => [
@@ -501,8 +494,6 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
         _assignedToMeta,
         assignedTo.isAcceptableOrUnknown(data['assigned_to']!, _assignedToMeta),
       );
-    } else if (isInserting) {
-      context.missing(_assignedToMeta);
     }
     if (data.containsKey('deadline')) {
       context.handle(
@@ -731,12 +722,11 @@ class TasksCompanion extends UpdateCompanion<Task> {
     required int projectId,
     this.parentTaskId = const Value.absent(),
     required String title,
-    required String assignedTo,
+    this.assignedTo = const Value.absent(),
     required DateTime deadline,
     this.status = const Value.absent(),
   }) : projectId = Value(projectId),
        title = Value(title),
-       assignedTo = Value(assignedTo),
        deadline = Value(deadline);
   static Insertable<Task> custom({
     Expression<int>? id,
@@ -836,7 +826,7 @@ typedef $$ProjectsTableCreateCompanionBuilder =
     ProjectsCompanion Function({
       Value<int> id,
       required String name,
-      Value<String?> description,
+      Value<String> priority,
       required DateTime startDate,
       Value<DateTime?> endDate,
     });
@@ -844,7 +834,7 @@ typedef $$ProjectsTableUpdateCompanionBuilder =
     ProjectsCompanion Function({
       Value<int> id,
       Value<String> name,
-      Value<String?> description,
+      Value<String> priority,
       Value<DateTime> startDate,
       Value<DateTime?> endDate,
     });
@@ -892,8 +882,8 @@ class $$ProjectsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get description => $composableBuilder(
-    column: $table.description,
+  ColumnFilters<String> get priority => $composableBuilder(
+    column: $table.priority,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -952,8 +942,8 @@ class $$ProjectsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get description => $composableBuilder(
-    column: $table.description,
+  ColumnOrderings<String> get priority => $composableBuilder(
+    column: $table.priority,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -983,10 +973,8 @@ class $$ProjectsTableAnnotationComposer
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
-  GeneratedColumn<String> get description => $composableBuilder(
-    column: $table.description,
-    builder: (column) => column,
-  );
+  GeneratedColumn<String> get priority =>
+      $composableBuilder(column: $table.priority, builder: (column) => column);
 
   GeneratedColumn<DateTime> get startDate =>
       $composableBuilder(column: $table.startDate, builder: (column) => column);
@@ -1050,13 +1038,13 @@ class $$ProjectsTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
-                Value<String?> description = const Value.absent(),
+                Value<String> priority = const Value.absent(),
                 Value<DateTime> startDate = const Value.absent(),
                 Value<DateTime?> endDate = const Value.absent(),
               }) => ProjectsCompanion(
                 id: id,
                 name: name,
-                description: description,
+                priority: priority,
                 startDate: startDate,
                 endDate: endDate,
               ),
@@ -1064,13 +1052,13 @@ class $$ProjectsTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 required String name,
-                Value<String?> description = const Value.absent(),
+                Value<String> priority = const Value.absent(),
                 required DateTime startDate,
                 Value<DateTime?> endDate = const Value.absent(),
               }) => ProjectsCompanion.insert(
                 id: id,
                 name: name,
-                description: description,
+                priority: priority,
                 startDate: startDate,
                 endDate: endDate,
               ),
@@ -1128,7 +1116,7 @@ typedef $$TasksTableCreateCompanionBuilder =
       required int projectId,
       Value<int?> parentTaskId,
       required String title,
-      required String assignedTo,
+      Value<String> assignedTo,
       required DateTime deadline,
       Value<String> status,
     });
@@ -1466,7 +1454,7 @@ class $$TasksTableTableManager
                 required int projectId,
                 Value<int?> parentTaskId = const Value.absent(),
                 required String title,
-                required String assignedTo,
+                Value<String> assignedTo = const Value.absent(),
                 required DateTime deadline,
                 Value<String> status = const Value.absent(),
               }) => TasksCompanion.insert(
