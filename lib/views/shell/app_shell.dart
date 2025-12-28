@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../intel_feed/intel_feed_screen.dart';
 import '../projects/projects_screen.dart';
+import '../timeline/timeline_screen.dart';
 
 
 class AppShell extends StatefulWidget {
@@ -17,7 +18,7 @@ class _AppShellState extends State<AppShell> {
   final screens = const [
     IntelFeedScreen(),
     ProjectsScreen(),
-    Placeholder(),
+    TimelineScreen(),
     Placeholder(),
   ];
 
