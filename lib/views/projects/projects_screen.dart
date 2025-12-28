@@ -8,6 +8,7 @@ import '../../providers/project_provider.dart';
 import 'project_detail_screen.dart';
 import 'widgets/add_project_sheet.dart';
 import 'widgets/cyber_project_card.dart';
+import '../timeline/timeline_screen.dart';
 
 class ProjectsScreen extends ConsumerWidget {
   const ProjectsScreen({super.key});
@@ -58,16 +59,33 @@ class ProjectsScreen extends ConsumerWidget {
                       color: CyberTheme.glass,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: IconButton(
-                      icon: const Icon(LucideIcons.plus, color: CyberTheme.accent),
-                      onPressed: () {
-                         showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            backgroundColor: Colors.transparent,
-                            builder: (_) => const AddProjectSheet(),
-                          );
-                      },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                           icon: const Icon(LucideIcons.calendar, color: Colors.white70), // Timeline Icon
+                           tooltip: "Mission Timeline",
+                           onPressed: () {
+                              Navigator.push(
+                                 context,
+                                 MaterialPageRoute(builder: (_) => const TimelineScreen()),
+                              );
+                           },
+                        ),
+                        Container(width: 1, height: 24, color: Colors.white10),
+                        IconButton(
+                          icon: const Icon(LucideIcons.plus, color: CyberTheme.accent),
+                          tooltip: "New Operation",
+                          onPressed: () {
+                             showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                builder: (_) => const AddProjectSheet(),
+                              );
+                          },
+                        ),
+                      ],
                     ),
                   )
                 ],
