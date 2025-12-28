@@ -352,7 +352,7 @@ class _CyberProjectCardState extends ConsumerState<CyberProjectCard>
                         void recurse(List<TaskNode> list) {
                           for (var node in list) {
                             total++;
-                            if (node.task.status == 'Completed') done++;
+                            if (node.task.status == 'done') done++;
                             recurse(node.children);
                           }
                         }

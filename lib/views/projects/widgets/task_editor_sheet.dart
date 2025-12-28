@@ -35,17 +35,14 @@ class _TaskEditorSheetState extends ConsumerState<TaskEditorSheet>
   double _threatLevel = 1.0;
   DateTime? _startDate;
   DateTime? _deadline;
-  String _status = 'Yet to Plan';
+  String _status = 'todo';
   late AnimationController _animController;
 
   final List<String> _statuses = [
-    'Yet to Plan',
-    'Planning',
-    'In Progress',
-    'Update Required',
-    'On Hold',
-    'Completed',
-    'DeadEnd'
+    'todo',
+    'progress',
+    'review',
+    'done',
   ];
 
   @override
@@ -592,29 +589,35 @@ class _TaskEditorSheetState extends ConsumerState<TaskEditorSheet>
     if (_titleCtrl.text.isEmpty) return;
 
     final dao = ref.read(projectActionsProvider).dao;
-    final companion = TasksCompanion(
-      title: Value(_titleCtrl.text),
-      description: Value(_descCtrl.text),
-      status: Value(_status),
-      threatLevel: Value(_threatLevel.toInt()),
-      assignedMemberId: Value(_selectedAssigneeId),
-      startDate: Value(_startDate),
-      deadline: Value(_deadline),
-      projectId: widget.taskToEdit != null
-          ? const Value.absent()
-          : Value(widget.projectId),
-      parentTaskId: widget.parentTask != null
-          ? Value(widget.parentTask!.id)
-          : (widget.taskToEdit != null
-          ? const Value.absent()
-          : const Value.absent()),
-    );
 
     if (widget.taskToEdit != null) {
+      // Editing existing task - only update changed fields
+      final companion = TasksCompanion(
+        title: Value(_titleCtrl.text),
+        description: Value(_descCtrl.text.isEmpty ? null : _descCtrl.text),
+        status: Value(_status),
+        threatLevel: Value(_threatLevel.toInt()),
+        assignedMemberId: Value(_selectedAssigneeId),
+        startDate: Value(_startDate),
+        deadline: Value(_deadline),
+      );
       dao.updateTask(widget.taskToEdit!.id, companion);
     } else {
+      // Creating new task - include all required fields
+      final companion = TasksCompanion.insert(
+        title: _titleCtrl.text,
+        projectId: widget.projectId,
+        description: Value(_descCtrl.text.isEmpty ? null : _descCtrl.text),
+        status: Value(_status),
+        threatLevel: Value(_threatLevel.toInt()),
+        assignedMemberId: Value(_selectedAssigneeId),
+        startDate: Value(_startDate),
+        deadline: Value(_deadline),
+        parentTaskId: Value(widget.parentTask?.id),
+      );
       dao.createTask(companion);
     }
+
     Navigator.pop(context);
   }
 }

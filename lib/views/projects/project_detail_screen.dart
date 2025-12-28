@@ -67,6 +67,14 @@ class _ProjectDetailScreenState extends ConsumerState<ProjectDetailScreen>
   Widget build(BuildContext context) {
     final tasksAsync = ref.watch(recursiveTasksProvider(widget.project.id));
 
+    // Trigger animation when switching modes
+    ref.listen(recursiveTasksProvider(widget.project.id), (previous, next) {
+      // When tasks change, restart the mode transition animation
+      if (previous?.hasValue == true && next.hasValue) {
+        _modeTransitionController.forward(from: 0);
+      }
+    });
+
     return Scaffold(
       backgroundColor: CyberTheme.background,
       body: Stack(
@@ -329,6 +337,7 @@ class _ProjectDetailScreenState extends ConsumerState<ProjectDetailScreen>
                         return FadeTransition(
                           opacity: _modeTransitionController,
                           child: CyberKanbanBoard(
+                            key: ValueKey('kanban-${nodes.length}'),
                             projectId: widget.project.id,
                             taskNodes: nodes,
                           ),
@@ -336,6 +345,7 @@ class _ProjectDetailScreenState extends ConsumerState<ProjectDetailScreen>
                       }
 
                       return FadeTransition(
+                        key: ValueKey('list-${nodes.length}'),
                         opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
                           CurvedAnimation(
                             parent: _modeTransitionController,
@@ -347,6 +357,7 @@ class _ProjectDetailScreenState extends ConsumerState<ProjectDetailScreen>
                           itemCount: nodes.length,
                           itemBuilder: (context, index) {
                             return CyberTaskTree(
+                              key: ValueKey('task-${nodes[index].task.id}'),
                               node: nodes[index],
                               onToggleStatus: () {
                                 ref
