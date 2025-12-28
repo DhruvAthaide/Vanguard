@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../core/theme/cyber_theme.dart';
+import '../../../core/theme/cyber_theme.dart';
 
 class TimelineLegend extends StatelessWidget {
   const TimelineLegend({super.key});
