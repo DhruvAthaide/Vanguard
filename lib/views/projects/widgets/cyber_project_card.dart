@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../core/theme/cyber_theme.dart';
-import '../../../../database/app_database.dart';
-import '../../../../providers/project_provider.dart';
+import '../../../core/theme/cyber_theme.dart';
+import '../../../database/app_database.dart';
+import '../../../providers/project_provider.dart';
 
 class CyberProjectCard extends ConsumerStatefulWidget {
   final Project project;

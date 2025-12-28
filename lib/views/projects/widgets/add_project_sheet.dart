@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:intl/intl.dart';
-import '../../../../core/theme/cyber_theme.dart';
-import '../../../../providers/project_provider.dart';
-import '../../../../database/app_database.dart';
+import '../../../core/theme/cyber_theme.dart';
+import '../../../providers/project_provider.dart';
+import '../../../database/app_database.dart';
 
 class AddProjectSheet extends ConsumerStatefulWidget {
   final Project? projectToEdit;
