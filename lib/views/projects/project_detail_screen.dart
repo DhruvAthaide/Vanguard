@@ -3,71 +3,103 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../core/theme/cyber_theme.dart';
-import '../../../../database/app_database.dart';
-import '../../../../providers/project_provider.dart';
+import '../../core/theme/cyber_theme.dart';
+import '../../database/app_database.dart';
+import '../../providers/project_provider.dart';
 import 'widgets/cyber_task_tree.dart';
-import 'widgets/task_editor_sheet.dart'; // We will create this next
+import 'widgets/cyber_kanban_board.dart';
+import 'widgets/task_editor_sheet.dart';
+import 'widgets/add_project_sheet.dart';
 
-class ProjectDetailScreen extends ConsumerWidget {
+class ProjectDetailScreen extends ConsumerStatefulWidget {
   final Project project;
 
   const ProjectDetailScreen({super.key, required this.project});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // IMPORTANT: Listening to the recursive provider
-    final tasksAsync = ref.watch(recursiveTasksProvider(project.id));
+  ConsumerState<ProjectDetailScreen> createState() => _ProjectDetailScreenState();
+}
+
+class _ProjectDetailScreenState extends ConsumerState<ProjectDetailScreen> {
+  bool _isKanbanMode = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final tasksAsync = ref.watch(recursiveTasksProvider(widget.project.id));
 
     return Scaffold(
       backgroundColor: CyberTheme.background,
       appBar: AppBar(
-        title: Text(project.name, style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
+        title: Text(widget.project.name, style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
+          // View Toggle
           IconButton(
+            icon: Icon(_isKanbanMode ? LucideIcons.list : LucideIcons.layoutGrid, color: CyberTheme.accent),
+            onPressed: () => setState(() => _isKanbanMode = !_isKanbanMode),
+            tooltip: _isKanbanMode ? "Switch to List" : "Switch to Board",
+          ),
+          PopupMenuButton<String>(
              icon: const Icon(LucideIcons.moreVertical),
-             onPressed: () {
-                // Show options: Archive, Delete, Edit
+             onSelected: (val) async {
+                if (val == 'edit') {
+                   // Open Edit Sheet
+                   showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (_) => AddProjectSheet(projectToEdit: widget.project),
+                   );
+                } else if (val == 'archive') {
+                   await ref.read(projectActionsProvider).archiveProject(widget.project.id, !widget.project.isArchived);
+                } else if (val == 'delete') {
+                   // Confirm? For now direct support.
+                   await ref.read(projectActionsProvider).deleteProject(widget.project.id);
+                   if (context.mounted) Navigator.pop(context); // Go back to list
+                }
              },
+             itemBuilder: (context) => [
+                const PopupMenuItem(value: 'edit', child: Text("Edit Operation parameters")),
+                PopupMenuItem(value: 'archive', child: Text(widget.project.isArchived ? "Unarchive Operation" : "Archive Operation")),
+                const PopupMenuItem(value: 'delete', child: Text("Terminate Operation", style: TextStyle(color: CyberTheme.danger))),
+             ],
           )
         ],
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-             // --- METADATA HEADER ---
-             Container(
-               width: double.infinity,
-               padding: const EdgeInsets.all(24),
-               decoration: BoxDecoration(
-                 color: CyberTheme.surface.withOpacity(0.5),
-                 border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.05))),
-               ),
-               child: Column(
-                 crossAxisAlignment: CrossAxisAlignment.start,
-                 children: [
-                    Text(
-                       project.description ?? "No Mission Brief",
-                       style: GoogleFonts.inter(color: Colors.white60, fontSize: 13, height: 1.5),
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        _Badge(icon: LucideIcons.calendar, text: project.deadline != null ? DateFormat('MMM dd').format(project.deadline!) : "Indefinite"),
-                        const SizedBox(width: 12),
-                        _Badge(
-                            icon: LucideIcons.shieldAlert, 
-                            text: project.priority.toUpperCase(),
-                            color: project.priority == 'critical' ? CyberTheme.danger : CyberTheme.accent
+             // --- METADATA HEADER (Minimal) ---
+             if (!_isKanbanMode) // Hide in Kanban to give more space? Or keep? Let's keep minimal.
+               Container(
+                 padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
+                 child: Column(
+                   crossAxisAlignment: CrossAxisAlignment.start,
+                   children: [
+                      if (widget.project.description != null)
+                        Text(
+                           widget.project.description!,
+                           style: GoogleFonts.inter(color: Colors.white60, fontSize: 13),
+                           maxLines: 1, overflow: TextOverflow.ellipsis,
                         ),
-                      ],
-                    )
-                 ],
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          _Badge(
+                              icon: LucideIcons.shieldAlert, 
+                              text: widget.project.priority.toUpperCase(),
+                              color: widget.project.priority == 'critical' ? CyberTheme.danger : CyberTheme.accent
+                          ),
+                          const SizedBox(width: 12),
+                           _Badge(icon: LucideIcons.calendar, text: widget.project.endDate != null ? DateFormat('MMM dd').format(widget.project.endDate!) : "No Deadline"),
+                        ],
+                      )
+                   ],
+                 ),
                ),
-             ),
              
-             // --- TASK TREE ---
+             // --- CONTENT ---
              Expanded(
                child: tasksAsync.when(
                  data: (nodes) {
@@ -75,6 +107,10 @@ class ProjectDetailScreen extends ConsumerWidget {
                       return Center(child: Text("No objectives defined.", style: GoogleFonts.inter(color: Colors.white24)));
                    }
                    
+                   if (_isKanbanMode) {
+                      return CyberKanbanBoard(projectId: widget.project.id, taskNodes: nodes);
+                   }
+
                    return ListView.builder(
                       padding: const EdgeInsets.all(24),
                       itemCount: nodes.length,
@@ -96,14 +132,11 @@ class ProjectDetailScreen extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-           // Show new Task Editor (supports full fields)
-           // For now, use a simplified version until we implement TaskEditorSheet fully
-           // Or just implement TaskEditorSheet rapidly now.
            showModalBottomSheet(
               context: context,
               isScrollControlled: true,
               backgroundColor: Colors.transparent,
-              builder: (_) => TaskEditorSheet(projectId: project.id),
+              builder: (_) => TaskEditorSheet(projectId: widget.project.id),
            );
         },
         backgroundColor: CyberTheme.accent,
@@ -126,18 +159,10 @@ class _Badge extends StatelessWidget {
      return Row(
        mainAxisSize: MainAxisSize.min,
        children: [
-          Icon(icon, size: 14, color: color),
+          Icon(icon, size: 12, color: color),
           const SizedBox(width: 6),
-          Text(text, style: GoogleFonts.inter(fontSize: 12, color: color, fontWeight: FontWeight.w500)),
+          Text(text, style: GoogleFonts.inter(fontSize: 11, color: color, fontWeight: FontWeight.w500)),
        ],
      );
   }
-}
-
-// Temporary Alias until update
-extension on Project {
-   // Mapping fields because generated Project might have different names or we need adapters
-   // Project generated: startDate, endDate. ProjectDetail expects deadline?
-   // Let's use endDate as deadline
-   DateTime? get deadline => endDate;
 }

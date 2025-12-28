@@ -5,21 +5,42 @@ import 'package:lucide_icons/lucide_icons.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/theme/cyber_theme.dart';
 import '../../../../providers/project_provider.dart';
+import '../../../../database/app_database.dart';
 
 class AddProjectSheet extends ConsumerStatefulWidget {
-  const AddProjectSheet({super.key});
+  final Project? projectToEdit;
+
+  const AddProjectSheet({super.key, this.projectToEdit});
 
   @override
   ConsumerState<AddProjectSheet> createState() => _AddProjectSheetState();
 }
 
 class _AddProjectSheetState extends ConsumerState<AddProjectSheet> {
-  final _nameCtrl = TextEditingController();
-  final _descCtrl = TextEditingController();
-  DateTime _deadline = DateTime.now().add(const Duration(days: 14));
+  late final TextEditingController _nameCtrl;
+  late final TextEditingController _descCtrl;
+  late DateTime _deadline;
+
+  @override
+  void initState() {
+    super.initState();
+    final p = widget.projectToEdit;
+    _nameCtrl = TextEditingController(text: p?.name ?? '');
+    _descCtrl = TextEditingController(text: p?.description ?? '');
+    _deadline = p?.endDate ?? DateTime.now().add(const Duration(days: 14));
+  }
+
+  @override
+  void dispose() {
+    _nameCtrl.dispose();
+    _descCtrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final isEditing = widget.projectToEdit != null;
+
     return Container(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom + 20,
@@ -36,7 +57,7 @@ class _AddProjectSheetState extends ConsumerState<AddProjectSheet> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("INITIATE OPERATION", style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold, color: CyberTheme.accent, letterSpacing: 2.0)),
+              Text(isEditing ? "UPDATE OPERATION" : "INITIATE OPERATION", style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold, color: CyberTheme.accent, letterSpacing: 2.0)),
               IconButton(icon: const Icon(LucideIcons.x, color: Colors.white54), onPressed: () => Navigator.pop(context)),
             ],
           ),
@@ -52,7 +73,7 @@ class _AddProjectSheetState extends ConsumerState<AddProjectSheet> {
                fillColor: Colors.black26,
                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
             ),
-            autofocus: true,
+            autofocus: !isEditing,
           ),
           const SizedBox(height: 16),
           
@@ -76,7 +97,7 @@ class _AddProjectSheetState extends ConsumerState<AddProjectSheet> {
                 final d = await showDatePicker(
                    context: context, 
                    initialDate: _deadline, 
-                   firstDate: DateTime.now(), 
+                   firstDate: DateTime.now().subtract(const Duration(days: 365)), // Allow past dates for edit
                    lastDate: DateTime.now().add(const Duration(days: 365*5))
                 );
                 if (d != null) setState(() => _deadline = d);
@@ -109,11 +130,20 @@ class _AddProjectSheetState extends ConsumerState<AddProjectSheet> {
           ElevatedButton(
              onPressed: () {
                 if (_nameCtrl.text.isNotEmpty) {
-                   ref.read(projectActionsProvider).createProject(
-                      _nameCtrl.text,
-                      _descCtrl.text,
-                      _deadline,
-                   );
+                   if (isEditing) {
+                      ref.read(projectActionsProvider).updateProject(
+                        widget.projectToEdit!.id,
+                        _nameCtrl.text,
+                        _descCtrl.text,
+                        _deadline
+                      );
+                   } else {
+                      ref.read(projectActionsProvider).createProject(
+                         _nameCtrl.text,
+                         _descCtrl.text,
+                         _deadline,
+                      );
+                   }
                    Navigator.pop(context);
                 }
              },
@@ -123,7 +153,7 @@ class _AddProjectSheetState extends ConsumerState<AddProjectSheet> {
                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                elevation: 0,
              ),
-             child: Text("COMMENCE OPERATION", style: GoogleFonts.inter(color: Colors.black, fontWeight: FontWeight.bold, letterSpacing: 1.0)),
+             child: Text(isEditing ? "UPDATE PARAMETERS" : "COMMENCE OPERATION", style: GoogleFonts.inter(color: Colors.black, fontWeight: FontWeight.bold, letterSpacing: 1.0)),
           )
         ],
       ),

@@ -1000,6 +1000,21 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
     requiredDuringInsert: false,
     defaultValue: const Constant('todo'),
   );
+  static const VerificationMeta _isArchivedMeta = const VerificationMeta(
+    'isArchived',
+  );
+  @override
+  late final GeneratedColumn<bool> isArchived = GeneratedColumn<bool>(
+    'is_archived',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_archived" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -1013,6 +1028,7 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
     startDate,
     deadline,
     status,
+    isArchived,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1105,6 +1121,12 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
         status.isAcceptableOrUnknown(data['status']!, _statusMeta),
       );
     }
+    if (data.containsKey('is_archived')) {
+      context.handle(
+        _isArchivedMeta,
+        isArchived.isAcceptableOrUnknown(data['is_archived']!, _isArchivedMeta),
+      );
+    }
     return context;
   }
 
@@ -1158,6 +1180,10 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
         DriftSqlType.string,
         data['${effectivePrefix}status'],
       )!,
+      isArchived: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_archived'],
+      )!,
     );
   }
 
@@ -1179,6 +1205,7 @@ class Task extends DataClass implements Insertable<Task> {
   final DateTime? startDate;
   final DateTime? deadline;
   final String status;
+  final bool isArchived;
   const Task({
     required this.id,
     required this.projectId,
@@ -1191,6 +1218,7 @@ class Task extends DataClass implements Insertable<Task> {
     this.startDate,
     this.deadline,
     required this.status,
+    required this.isArchived,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1216,6 +1244,7 @@ class Task extends DataClass implements Insertable<Task> {
       map['deadline'] = Variable<DateTime>(deadline);
     }
     map['status'] = Variable<String>(status);
+    map['is_archived'] = Variable<bool>(isArchived);
     return map;
   }
 
@@ -1242,6 +1271,7 @@ class Task extends DataClass implements Insertable<Task> {
           ? const Value.absent()
           : Value(deadline),
       status: Value(status),
+      isArchived: Value(isArchived),
     );
   }
 
@@ -1262,6 +1292,7 @@ class Task extends DataClass implements Insertable<Task> {
       startDate: serializer.fromJson<DateTime?>(json['startDate']),
       deadline: serializer.fromJson<DateTime?>(json['deadline']),
       status: serializer.fromJson<String>(json['status']),
+      isArchived: serializer.fromJson<bool>(json['isArchived']),
     );
   }
   @override
@@ -1279,6 +1310,7 @@ class Task extends DataClass implements Insertable<Task> {
       'startDate': serializer.toJson<DateTime?>(startDate),
       'deadline': serializer.toJson<DateTime?>(deadline),
       'status': serializer.toJson<String>(status),
+      'isArchived': serializer.toJson<bool>(isArchived),
     };
   }
 
@@ -1294,6 +1326,7 @@ class Task extends DataClass implements Insertable<Task> {
     Value<DateTime?> startDate = const Value.absent(),
     Value<DateTime?> deadline = const Value.absent(),
     String? status,
+    bool? isArchived,
   }) => Task(
     id: id ?? this.id,
     projectId: projectId ?? this.projectId,
@@ -1308,6 +1341,7 @@ class Task extends DataClass implements Insertable<Task> {
     startDate: startDate.present ? startDate.value : this.startDate,
     deadline: deadline.present ? deadline.value : this.deadline,
     status: status ?? this.status,
+    isArchived: isArchived ?? this.isArchived,
   );
   Task copyWithCompanion(TasksCompanion data) {
     return Task(
@@ -1332,6 +1366,9 @@ class Task extends DataClass implements Insertable<Task> {
       startDate: data.startDate.present ? data.startDate.value : this.startDate,
       deadline: data.deadline.present ? data.deadline.value : this.deadline,
       status: data.status.present ? data.status.value : this.status,
+      isArchived: data.isArchived.present
+          ? data.isArchived.value
+          : this.isArchived,
     );
   }
 
@@ -1348,7 +1385,8 @@ class Task extends DataClass implements Insertable<Task> {
           ..write('orderIndex: $orderIndex, ')
           ..write('startDate: $startDate, ')
           ..write('deadline: $deadline, ')
-          ..write('status: $status')
+          ..write('status: $status, ')
+          ..write('isArchived: $isArchived')
           ..write(')'))
         .toString();
   }
@@ -1366,6 +1404,7 @@ class Task extends DataClass implements Insertable<Task> {
     startDate,
     deadline,
     status,
+    isArchived,
   );
   @override
   bool operator ==(Object other) =>
@@ -1381,7 +1420,8 @@ class Task extends DataClass implements Insertable<Task> {
           other.orderIndex == this.orderIndex &&
           other.startDate == this.startDate &&
           other.deadline == this.deadline &&
-          other.status == this.status);
+          other.status == this.status &&
+          other.isArchived == this.isArchived);
 }
 
 class TasksCompanion extends UpdateCompanion<Task> {
@@ -1396,6 +1436,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
   final Value<DateTime?> startDate;
   final Value<DateTime?> deadline;
   final Value<String> status;
+  final Value<bool> isArchived;
   const TasksCompanion({
     this.id = const Value.absent(),
     this.projectId = const Value.absent(),
@@ -1408,6 +1449,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
     this.startDate = const Value.absent(),
     this.deadline = const Value.absent(),
     this.status = const Value.absent(),
+    this.isArchived = const Value.absent(),
   });
   TasksCompanion.insert({
     this.id = const Value.absent(),
@@ -1421,6 +1463,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
     this.startDate = const Value.absent(),
     this.deadline = const Value.absent(),
     this.status = const Value.absent(),
+    this.isArchived = const Value.absent(),
   }) : projectId = Value(projectId),
        title = Value(title);
   static Insertable<Task> custom({
@@ -1435,6 +1478,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
     Expression<DateTime>? startDate,
     Expression<DateTime>? deadline,
     Expression<String>? status,
+    Expression<bool>? isArchived,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1448,6 +1492,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
       if (startDate != null) 'start_date': startDate,
       if (deadline != null) 'deadline': deadline,
       if (status != null) 'status': status,
+      if (isArchived != null) 'is_archived': isArchived,
     });
   }
 
@@ -1463,6 +1508,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
     Value<DateTime?>? startDate,
     Value<DateTime?>? deadline,
     Value<String>? status,
+    Value<bool>? isArchived,
   }) {
     return TasksCompanion(
       id: id ?? this.id,
@@ -1476,6 +1522,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
       startDate: startDate ?? this.startDate,
       deadline: deadline ?? this.deadline,
       status: status ?? this.status,
+      isArchived: isArchived ?? this.isArchived,
     );
   }
 
@@ -1515,6 +1562,9 @@ class TasksCompanion extends UpdateCompanion<Task> {
     if (status.present) {
       map['status'] = Variable<String>(status.value);
     }
+    if (isArchived.present) {
+      map['is_archived'] = Variable<bool>(isArchived.value);
+    }
     return map;
   }
 
@@ -1531,7 +1581,8 @@ class TasksCompanion extends UpdateCompanion<Task> {
           ..write('orderIndex: $orderIndex, ')
           ..write('startDate: $startDate, ')
           ..write('deadline: $deadline, ')
-          ..write('status: $status')
+          ..write('status: $status, ')
+          ..write('isArchived: $isArchived')
           ..write(')'))
         .toString();
   }
@@ -3043,6 +3094,7 @@ typedef $$TasksTableCreateCompanionBuilder =
       Value<DateTime?> startDate,
       Value<DateTime?> deadline,
       Value<String> status,
+      Value<bool> isArchived,
     });
 typedef $$TasksTableUpdateCompanionBuilder =
     TasksCompanion Function({
@@ -3057,6 +3109,7 @@ typedef $$TasksTableUpdateCompanionBuilder =
       Value<DateTime?> startDate,
       Value<DateTime?> deadline,
       Value<String> status,
+      Value<bool> isArchived,
     });
 
 final class $$TasksTableReferences
@@ -3181,6 +3234,11 @@ class $$TasksTableFilterComposer extends Composer<_$AppDatabase, $TasksTable> {
 
   ColumnFilters<String> get status => $composableBuilder(
     column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isArchived => $composableBuilder(
+    column: $table.isArchived,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -3328,6 +3386,11 @@ class $$TasksTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get isArchived => $composableBuilder(
+    column: $table.isArchived,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$ProjectsTableOrderingComposer get projectId {
     final $$ProjectsTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -3436,6 +3499,11 @@ class $$TasksTableAnnotationComposer
 
   GeneratedColumn<String> get status =>
       $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<bool> get isArchived => $composableBuilder(
+    column: $table.isArchived,
+    builder: (column) => column,
+  );
 
   $$ProjectsTableAnnotationComposer get projectId {
     final $$ProjectsTableAnnotationComposer composer = $composerBuilder(
@@ -3576,6 +3644,7 @@ class $$TasksTableTableManager
                 Value<DateTime?> startDate = const Value.absent(),
                 Value<DateTime?> deadline = const Value.absent(),
                 Value<String> status = const Value.absent(),
+                Value<bool> isArchived = const Value.absent(),
               }) => TasksCompanion(
                 id: id,
                 projectId: projectId,
@@ -3588,6 +3657,7 @@ class $$TasksTableTableManager
                 startDate: startDate,
                 deadline: deadline,
                 status: status,
+                isArchived: isArchived,
               ),
           createCompanionCallback:
               ({
@@ -3602,6 +3672,7 @@ class $$TasksTableTableManager
                 Value<DateTime?> startDate = const Value.absent(),
                 Value<DateTime?> deadline = const Value.absent(),
                 Value<String> status = const Value.absent(),
+                Value<bool> isArchived = const Value.absent(),
               }) => TasksCompanion.insert(
                 id: id,
                 projectId: projectId,
@@ -3614,6 +3685,7 @@ class $$TasksTableTableManager
                 startDate: startDate,
                 deadline: deadline,
                 status: status,
+                isArchived: isArchived,
               ),
           withReferenceMapper: (p0) => p0
               .map(

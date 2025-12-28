@@ -161,6 +161,18 @@ class ProjectActions {
      return dao.updateProject(id, ProjectsCompanion(isArchived: Value(archive)));
   }
 
+  Future<void> updateProject(int id, String name, String desc, DateTime deadline) {
+    return dao.updateProject(id, ProjectsCompanion(
+       name: Value(name),
+       description: Value(desc),
+       endDate: Value(deadline),
+    ));
+  }
+
+  Future<void> deleteProject(int id) {
+    return dao.deleteProject(id);
+  }
+
   Future<void> createTask(int projectId, String title, {int? parentId}) {
     return dao.createTask(TasksCompanion(
         projectId: Value(projectId),
@@ -168,6 +180,10 @@ class ProjectActions {
         title: Value(title),
         deadline: Value(DateTime.now().add(const Duration(days: 3))),
     ));
+  }
+  
+  Future<void> archiveTask(int id, bool archive) {
+     return dao.updateTask(id, TasksCompanion(isArchived: Value(archive)));
   }
 
   Future<void> toggleTaskStatus(Task task) {

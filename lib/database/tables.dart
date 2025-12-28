@@ -44,6 +44,9 @@ class Tasks extends Table {
   
   // Status: todo, progress, review, done
   TextColumn get status => text().withDefault(const Constant('todo'))(); 
+  
+  // Archival
+  BoolColumn get isArchived => boolean().withDefault(const Constant(false))();
 }
 
 // ─────────────────────────────────────────
