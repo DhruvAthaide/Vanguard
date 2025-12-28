@@ -1,51 +1,226 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'dart:ui';
 import '../../../core/theme/cyber_theme.dart';
 
-class TimelineLegend extends StatelessWidget {
+class TimelineLegend extends StatefulWidget {
   const TimelineLegend({super.key});
 
   @override
+  State<TimelineLegend> createState() => _TimelineLegendState();
+}
+
+class _TimelineLegendState extends State<TimelineLegend>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    )..forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-         color: CyberTheme.surface,
-         borderRadius: BorderRadius.circular(20),
-         border: Border.all(color: Colors.white12),
-         boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 10)]
+    return SlideTransition(
+      position: Tween<Offset>(
+        begin: const Offset(0, 1),
+        end: Offset.zero,
+      ).animate(
+        CurvedAnimation(
+          parent: _controller,
+          curve: Curves.easeOutCubic,
+        ),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-           _LegendItem(color: CyberTheme.danger, label: "Critical"),
-           const SizedBox(width: 12),
-           _LegendItem(color: Colors.orange, label: "Medium"),
-           const SizedBox(width: 12),
-           _LegendItem(color: Colors.green, label: "Low"),
-           const SizedBox(width: 12),
-           Container(width: 2, height: 12, color: Colors.cyanAccent),
-           const SizedBox(width: 4),
-           Text("Today", style: GoogleFonts.inter(fontSize: 10, color: Colors.white70)),
-        ],
+      child: FadeTransition(
+        opacity: _controller,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.white.withOpacity(0.12),
+                    Colors.white.withOpacity(0.08),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.15),
+                  width: 1.5,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    blurRadius: 20,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _LegendItem(
+                    color: CyberTheme.danger,
+                    label: "Critical",
+                  ),
+                  _Divider(),
+                  _LegendItem(
+                    color: const Color(0xFFFF6B2C),
+                    label: "High",
+                  ),
+                  _Divider(),
+                  _LegendItem(
+                    color: CyberTheme.accent,
+                    label: "Medium",
+                  ),
+                  _Divider(),
+                  _LegendItem(
+                    color: CyberTheme.success,
+                    label: "Low",
+                  ),
+                  _Divider(),
+                  Container(
+                    width: 2,
+                    height: 16,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.cyanAccent,
+                          Colors.cyanAccent.withOpacity(0.5),
+                        ],
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.cyanAccent.withOpacity(0.5),
+                          blurRadius: 4,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    "Today",
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      color: Colors.white.withOpacity(0.85),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
 }
 
-class _LegendItem extends StatelessWidget {
+class _LegendItem extends StatefulWidget {
   final Color color;
   final String label;
-  const _LegendItem({required this.color, required this.label});
+
+  const _LegendItem({
+    required this.color,
+    required this.label,
+  });
+
+  @override
+  State<_LegendItem> createState() => _LegendItemState();
+}
+
+class _LegendItemState extends State<_LegendItem>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _pulseController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
-         Container(width: 8, height: 8, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
-         const SizedBox(width: 4),
-         Text(label, style: GoogleFonts.inter(fontSize: 10, color: Colors.white70)),
+        AnimatedBuilder(
+          animation: _pulseController,
+          builder: (context, child) {
+            return Container(
+              width: 10,
+              height: 10,
+              decoration: BoxDecoration(
+                color: widget.color,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: widget.color.withOpacity(0.4 * _pulseController.value),
+                    blurRadius: 6 * _pulseController.value,
+                    spreadRadius: 2 * _pulseController.value,
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+        const SizedBox(width: 8),
+        Text(
+          widget.label,
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            color: Colors.white.withOpacity(0.85),
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ],
+    );
+  }
+}
+
+class _Divider extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 1,
+      height: 16,
+      margin: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.white.withOpacity(0.0),
+            Colors.white.withOpacity(0.2),
+            Colors.white.withOpacity(0.0),
+          ],
+        ),
+      ),
     );
   }
 }
