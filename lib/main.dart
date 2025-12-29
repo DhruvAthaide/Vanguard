@@ -19,7 +19,7 @@ class CyberExecApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: CyberTheme.dark(),
-      home: const AppShell(),
+      home: AppShell(key: appShellKey),
     );
   }
 }

@@ -118,7 +118,7 @@ class _ActionButtonState extends State<_ActionButton> {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
             child: Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -143,20 +143,25 @@ class _ActionButtonState extends State<_ActionButton> {
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
                     widget.icon,
                     color: widget.color,
-                    size: 20,
+                    size: 18,
                   ),
-                  const SizedBox(width: 8),
-                  Text(
-                    widget.label,
-                    style: GoogleFonts.inter(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: widget.color,
-                      letterSpacing: 0.3,
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: Text(
+                      widget.label,
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: widget.color,
+                        letterSpacing: 0.2,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],

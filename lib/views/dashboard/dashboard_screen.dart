@@ -7,6 +7,7 @@ import '../../core/theme/cyber_theme.dart';
 import '../../providers/project_provider.dart';
 import '../../providers/intel_provider.dart';
 import '../projects/widgets/add_project_sheet.dart';
+import '../shell/app_shell.dart';
 import 'widgets/stats_card.dart';
 import 'widgets/project_progress_widget.dart';
 import 'widgets/intel_highlights.dart';
@@ -259,26 +260,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                           );
                         },
                         onViewIntel: () {
-                          // Navigate to Intel tab
-                          final shellState = context.findAncestorStateOfType<State>();
-                          if (shellState != null && shellState.mounted) {
-                            // Switch to Intel tab (index 1)
-                            Navigator.pop(context);
-                            Future.delayed(const Duration(milliseconds: 100), () {
-                              // This will be handled by updating the shell index
-                            });
-                          }
+                          // Switch to Intel tab (index 1)
+                          appShellKey.currentState?.switchTab(1);
                         },
                         onViewVault: () {
-                          // Navigate to Vault tab
-                          final shellState = context.findAncestorStateOfType<State>();
-                          if (shellState != null && shellState.mounted) {
-                            // Switch to Vault tab (index 3)
-                            Navigator.pop(context);
-                            Future.delayed(const Duration(milliseconds: 100), () {
-                              // This will be handled by updating the shell index
-                            });
-                          }
+                          // Switch to Vault tab (index 3)
+                          appShellKey.currentState?.switchTab(3);
                         },
                       ),
                     ),
