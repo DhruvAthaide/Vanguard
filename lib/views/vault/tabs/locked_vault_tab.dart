@@ -7,9 +7,48 @@ import '../../../core/theme/cyber_theme.dart';
 import '../../../providers/vault_provider.dart';
 import '../../../services/secure_storage_service.dart';
 import '../widgets/secure_editor.dart';
+import '../widgets/pin_change_dialog.dart';
 
 class LockedVaultTab extends ConsumerWidget {
   const LockedVaultTab({super.key});
+
+  Future<void> _handleChangePIN(BuildContext context, WidgetRef ref) async {
+    final pinService = ref.read(pinServiceProvider);
+    
+    final result = await showDialog<Map<String, String>>(
+      context: context,
+      builder: (_) => const PinChangeDialog(),
+    );
+    
+    if (result != null && context.mounted) {
+      final success = await pinService.changePin(
+        result['oldPin']!,
+        result['newPin']!,
+      );
+      
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'PIN changed successfully',
+              style: GoogleFonts.inter(color: Colors.white),
+            ),
+            backgroundColor: CyberTheme.accent,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Incorrect current PIN',
+              style: GoogleFonts.inter(color: Colors.white),
+            ),
+            backgroundColor: CyberTheme.danger,
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -20,35 +59,68 @@ class LockedVaultTab extends ConsumerWidget {
       backgroundColor: Colors.transparent,
       body: Column(
         children: [
-          // Locked Header
+          // Locked Header with Change PIN
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            child: GestureDetector(
-              onTap: () => vaultController.lock(),
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                decoration: BoxDecoration(
-                  color: CyberTheme.danger.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: CyberTheme.danger.withOpacity(0.3)),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(LucideIcons.lock, color: CyberTheme.danger, size: 16),
-                    const SizedBox(width: 8),
-                    Text(
-                      "INSTANT LOCK SESSION",
-                      style: GoogleFonts.inter(
-                        color: CyberTheme.danger,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.0,
-                        fontSize: 12,
+            child: Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => vaultController.lock(),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        color: CyberTheme.danger.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: CyberTheme.danger.withOpacity(0.3)),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(LucideIcons.lock, color: CyberTheme.danger, size: 16),
+                          const SizedBox(width: 8),
+                          Text(
+                            "INSTANT LOCK",
+                            style: GoogleFonts.inter(
+                              color: CyberTheme.danger,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.0,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
+                const SizedBox(width: 12),
+                GestureDetector(
+                  onTap: () => _handleChangePIN(context, ref),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: CyberTheme.accent.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: CyberTheme.accent.withOpacity(0.3)),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(LucideIcons.keyRound, color: CyberTheme.accent, size: 16),
+                        const SizedBox(width: 8),
+                        Text(
+                          "CHANGE PIN",
+                          style: GoogleFonts.inter(
+                            color: CyberTheme.accent,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.0,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
 
