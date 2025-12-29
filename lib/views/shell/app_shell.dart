@@ -7,6 +7,9 @@ import '../timeline/timeline_screen.dart';
 import '../vault/vault_screen.dart';
 import 'widgets/cyber_nav_bar.dart';
 
+// Global key to access shell state
+final GlobalKey<_AppShellState> appShellKey = GlobalKey<_AppShellState>();
+
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
 
@@ -30,6 +33,10 @@ class _AppShellState extends State<AppShell> {
     NavDestination(icon: LucideIcons.layers, label: "Projects"),
     NavDestination(icon: LucideIcons.lock, label: "Vault"),
   ];
+
+  void switchTab(int newIndex) {
+    setState(() => index = newIndex);
+  }
 
   @override
   Widget build(BuildContext context) {
