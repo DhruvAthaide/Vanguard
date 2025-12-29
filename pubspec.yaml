@@ -36,6 +36,9 @@ dependencies:
   uuid: ^4.5.1
   crypto: ^3.0.5
 
+  # Rich Text
+  flutter_markdown: ^0.7.3
+
   cupertino_icons: ^1.0.8
   http: ^1.2.1
   webfeed_revised: ^0.7.0
