@@ -1,8 +1,9 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'dart:ui';
-
+import 'package:google_fonts/google_fonts.dart';
 import '../../providers/intel_provider.dart';
+import '../../core/theme/cyber_theme.dart';
 
 class IntelCategoryBar extends ConsumerStatefulWidget {
   const IntelCategoryBar({super.key});
@@ -14,13 +15,14 @@ class IntelCategoryBar extends ConsumerStatefulWidget {
 class _IntelCategoryBarState extends ConsumerState<IntelCategoryBar>
     with SingleTickerProviderStateMixin {
   late AnimationController _pulseController;
+  int? _hoveredIndex;
 
   @override
   void initState() {
     super.initState();
     _pulseController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1500),
+      duration: const Duration(milliseconds: 1800),
     )..repeat(reverse: true);
   }
 
@@ -44,136 +46,146 @@ class _IntelCategoryBarState extends ConsumerState<IntelCategoryBar>
     ];
 
     return Container(
-      height: 72,
-      margin: const EdgeInsets.only(bottom: 12),
+      height: 76,
+      margin: const EdgeInsets.only(bottom: 16),
       child: ListView.separated(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         scrollDirection: Axis.horizontal,
         itemCount: categories.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 10),
+        separatorBuilder: (_, __) => const SizedBox(width: 12),
         itemBuilder: (context, index) {
           final category = categories[index];
           final isSelected = category == selected;
+          final isHovered = _hoveredIndex == index;
 
-          return TweenAnimationBuilder<double>(
-            tween: Tween(begin: 0.0, end: isSelected ? 1.0 : 0.0),
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeOutCubic,
-            builder: (context, value, child) {
-              return GestureDetector(
-                onTap: () {
-                  ref.read(selectedCategoryProvider.notifier).state = category;
-                  // Haptic feedback would go here if available
-                },
-                child: AnimatedScale(
-                  scale: isSelected ? 1.0 : 0.95,
-                  duration: const Duration(milliseconds: 200),
-                  curve: Curves.easeOut,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 14,
-                    ),
-                    decoration: BoxDecoration(
-                      gradient: isSelected
-                          ? LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Theme.of(context).colorScheme.primary,
-                          Theme.of(context)
-                              .colorScheme
-                              .primary
-                              .withOpacity(0.8),
-                        ],
-                      )
-                          : null,
-                      color: isSelected
-                          ? null
-                          : Theme.of(context)
-                          .colorScheme
-                          .surface
-                          .withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: isSelected
-                            ? Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withOpacity(0.5)
-                            : Colors.white.withOpacity(0.1),
-                        width: isSelected ? 1.5 : 1,
-                      ),
-                      boxShadow: isSelected
-                          ? [
-                        BoxShadow(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .primary
-                              .withOpacity(0.3),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
+          return MouseRegion(
+            onEnter: (_) => setState(() => _hoveredIndex = index),
+            onExit: (_) => setState(() => _hoveredIndex = null),
+            child: TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0.0, end: isSelected ? 1.0 : 0.0),
+              duration: const Duration(milliseconds: 350),
+              curve: Curves.easeOutCubic,
+              builder: (context, value, child) {
+                return GestureDetector(
+                  onTap: () {
+                    ref.read(selectedCategoryProvider.notifier).state = category;
+                  },
+                  child: AnimatedScale(
+                    scale: isSelected ? 1.0 : (isHovered ? 1.05 : 0.96),
+                    duration: const Duration(milliseconds: 250),
+                    curve: Curves.easeOutCubic,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(22),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(
+                          sigmaX: isSelected || isHovered ? 16 : 12,
+                          sigmaY: isSelected || isHovered ? 16 : 12,
                         ),
-                        BoxShadow(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .primary
-                              .withOpacity(0.1),
-                          blurRadius: 24,
-                          offset: const Offset(0, 8),
-                        ),
-                      ]
-                          : null,
-                    ),
-                    child: Center(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (isSelected) ...[
-                            AnimatedBuilder(
-                              animation: _pulseController,
-                              builder: (context, child) {
-                                return Container(
-                                  width: 6,
-                                  height: 6,
-                                  margin: const EdgeInsets.only(right: 8),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.black,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(
-                                          0.3 * _pulseController.value,
-                                        ),
-                                        blurRadius: 8 * _pulseController.value,
-                                        spreadRadius:
-                                        2 * _pulseController.value,
-                                      ),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 26,
+                            vertical: 16,
+                          ),
+                          decoration: BoxDecoration(
+                            gradient: isSelected
+                                ? LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      CyberTheme.accent,
+                                      CyberTheme.accent.withOpacity(0.85),
+                                    ],
+                                  )
+                                : LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      CyberTheme.surface.withOpacity(isHovered ? 0.5 : 0.35),
+                                      CyberTheme.surface.withOpacity(isHovered ? 0.35 : 0.25),
                                     ],
                                   ),
-                                );
-                              },
-                            ),
-                          ],
-                          Text(
-                            category,
-                            style: TextStyle(
+                            borderRadius: BorderRadius.circular(22),
+                            border: Border.all(
                               color: isSelected
-                                  ? Colors.black
-                                  : Colors.white.withOpacity(0.85),
-                              fontWeight:
-                              isSelected ? FontWeight.bold : FontWeight.w600,
-                              fontSize: 14,
-                              letterSpacing: 0.2,
+                                  ? CyberTheme.accent.withOpacity(0.6)
+                                  : Colors.white.withOpacity(isHovered ? 0.2 : 0.12),
+                              width: isSelected ? 2.0 : 1.5,
+                            ),
+                            boxShadow: isSelected
+                                ? [
+                                    BoxShadow(
+                                      color: CyberTheme.accent.withOpacity(0.35),
+                                      blurRadius: 20,
+                                      offset: const Offset(0, 6),
+                                    ),
+                                    BoxShadow(
+                                      color: CyberTheme.accent.withOpacity(0.15),
+                                      blurRadius: 30,
+                                      spreadRadius: 2,
+                                    ),
+                                  ]
+                                : isHovered
+                                    ? [
+                                        BoxShadow(
+                                          color: Colors.white.withOpacity(0.1),
+                                          blurRadius: 15,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ]
+                                    : null,
+                          ),
+                          child: Center(
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (isSelected) ...[
+                                  AnimatedBuilder(
+                                    animation: _pulseController,
+                                    builder: (context, child) {
+                                      return Container(
+                                        width: 7,
+                                        height: 7,
+                                        margin: const EdgeInsets.only(right: 10),
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.black,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black.withOpacity(
+                                                0.4 * _pulseController.value,
+                                              ),
+                                              blurRadius: 10 * _pulseController.value,
+                                              spreadRadius: 3 * _pulseController.value,
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                                Text(
+                                  category,
+                                  style: GoogleFonts.inter(
+                                    color: isSelected
+                                        ? Colors.black
+                                        : Colors.white.withOpacity(isHovered ? 0.95 : 0.85),
+                                    fontWeight: isSelected
+                                        ? FontWeight.w800
+                                        : FontWeight.w700,
+                                    fontSize: 14,
+                                    letterSpacing: 0.3,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           );
         },
       ),
