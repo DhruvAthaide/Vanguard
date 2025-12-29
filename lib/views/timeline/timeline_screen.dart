@@ -116,6 +116,33 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen>
                       padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
                       child: Row(
                         children: [
+                          // Back Button
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.white.withOpacity(0.08),
+                                      Colors.white.withOpacity(0.04),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(
+                                    color: Colors.white.withOpacity(0.1),
+                                  ),
+                                ),
+                                child: _ZoomButton(
+                                  icon: LucideIcons.arrowLeft,
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          
                           // Title Section
                           Expanded(
                             child: Column(
