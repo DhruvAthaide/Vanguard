@@ -2264,6 +2264,448 @@ class TaskTagsCompanion extends UpdateCompanion<TaskTag> {
   }
 }
 
+class $WorkNotesTable extends WorkNotes
+    with TableInfo<$WorkNotesTable, WorkNote> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WorkNotesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contentMeta = const VerificationMeta(
+    'content',
+  );
+  @override
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+    'content',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _tagsMeta = const VerificationMeta('tags');
+  @override
+  late final GeneratedColumn<String> tags = GeneratedColumn<String>(
+    'tags',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isArchivedMeta = const VerificationMeta(
+    'isArchived',
+  );
+  @override
+  late final GeneratedColumn<bool> isArchived = GeneratedColumn<bool>(
+    'is_archived',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_archived" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    title,
+    content,
+    createdAt,
+    updatedAt,
+    tags,
+    isArchived,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'work_notes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<WorkNote> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('content')) {
+      context.handle(
+        _contentMeta,
+        content.isAcceptableOrUnknown(data['content']!, _contentMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    if (data.containsKey('tags')) {
+      context.handle(
+        _tagsMeta,
+        tags.isAcceptableOrUnknown(data['tags']!, _tagsMeta),
+      );
+    }
+    if (data.containsKey('is_archived')) {
+      context.handle(
+        _isArchivedMeta,
+        isArchived.isAcceptableOrUnknown(data['is_archived']!, _isArchivedMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  WorkNote map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return WorkNote(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      content: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      tags: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tags'],
+      ),
+      isArchived: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_archived'],
+      )!,
+    );
+  }
+
+  @override
+  $WorkNotesTable createAlias(String alias) {
+    return $WorkNotesTable(attachedDatabase, alias);
+  }
+}
+
+class WorkNote extends DataClass implements Insertable<WorkNote> {
+  final int id;
+  final String title;
+  final String? content;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final String? tags;
+  final bool isArchived;
+  const WorkNote({
+    required this.id,
+    required this.title,
+    this.content,
+    required this.createdAt,
+    required this.updatedAt,
+    this.tags,
+    required this.isArchived,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['title'] = Variable<String>(title);
+    if (!nullToAbsent || content != null) {
+      map['content'] = Variable<String>(content);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || tags != null) {
+      map['tags'] = Variable<String>(tags);
+    }
+    map['is_archived'] = Variable<bool>(isArchived);
+    return map;
+  }
+
+  WorkNotesCompanion toCompanion(bool nullToAbsent) {
+    return WorkNotesCompanion(
+      id: Value(id),
+      title: Value(title),
+      content: content == null && nullToAbsent
+          ? const Value.absent()
+          : Value(content),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      tags: tags == null && nullToAbsent ? const Value.absent() : Value(tags),
+      isArchived: Value(isArchived),
+    );
+  }
+
+  factory WorkNote.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return WorkNote(
+      id: serializer.fromJson<int>(json['id']),
+      title: serializer.fromJson<String>(json['title']),
+      content: serializer.fromJson<String?>(json['content']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      tags: serializer.fromJson<String?>(json['tags']),
+      isArchived: serializer.fromJson<bool>(json['isArchived']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'title': serializer.toJson<String>(title),
+      'content': serializer.toJson<String?>(content),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'tags': serializer.toJson<String?>(tags),
+      'isArchived': serializer.toJson<bool>(isArchived),
+    };
+  }
+
+  WorkNote copyWith({
+    int? id,
+    String? title,
+    Value<String?> content = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<String?> tags = const Value.absent(),
+    bool? isArchived,
+  }) => WorkNote(
+    id: id ?? this.id,
+    title: title ?? this.title,
+    content: content.present ? content.value : this.content,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    tags: tags.present ? tags.value : this.tags,
+    isArchived: isArchived ?? this.isArchived,
+  );
+  WorkNote copyWithCompanion(WorkNotesCompanion data) {
+    return WorkNote(
+      id: data.id.present ? data.id.value : this.id,
+      title: data.title.present ? data.title.value : this.title,
+      content: data.content.present ? data.content.value : this.content,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      tags: data.tags.present ? data.tags.value : this.tags,
+      isArchived: data.isArchived.present
+          ? data.isArchived.value
+          : this.isArchived,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WorkNote(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('content: $content, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('tags: $tags, ')
+          ..write('isArchived: $isArchived')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, title, content, createdAt, updatedAt, tags, isArchived);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WorkNote &&
+          other.id == this.id &&
+          other.title == this.title &&
+          other.content == this.content &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.tags == this.tags &&
+          other.isArchived == this.isArchived);
+}
+
+class WorkNotesCompanion extends UpdateCompanion<WorkNote> {
+  final Value<int> id;
+  final Value<String> title;
+  final Value<String?> content;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<String?> tags;
+  final Value<bool> isArchived;
+  const WorkNotesCompanion({
+    this.id = const Value.absent(),
+    this.title = const Value.absent(),
+    this.content = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.tags = const Value.absent(),
+    this.isArchived = const Value.absent(),
+  });
+  WorkNotesCompanion.insert({
+    this.id = const Value.absent(),
+    required String title,
+    this.content = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.tags = const Value.absent(),
+    this.isArchived = const Value.absent(),
+  }) : title = Value(title);
+  static Insertable<WorkNote> custom({
+    Expression<int>? id,
+    Expression<String>? title,
+    Expression<String>? content,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<String>? tags,
+    Expression<bool>? isArchived,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (title != null) 'title': title,
+      if (content != null) 'content': content,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (tags != null) 'tags': tags,
+      if (isArchived != null) 'is_archived': isArchived,
+    });
+  }
+
+  WorkNotesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? title,
+    Value<String?>? content,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<String?>? tags,
+    Value<bool>? isArchived,
+  }) {
+    return WorkNotesCompanion(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      tags: tags ?? this.tags,
+      isArchived: isArchived ?? this.isArchived,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (tags.present) {
+      map['tags'] = Variable<String>(tags.value);
+    }
+    if (isArchived.present) {
+      map['is_archived'] = Variable<bool>(isArchived.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WorkNotesCompanion(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('content: $content, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('tags: $tags, ')
+          ..write('isArchived: $isArchived')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -2273,6 +2715,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $TagsTable tags = $TagsTable(this);
   late final $ProjectTagsTable projectTags = $ProjectTagsTable(this);
   late final $TaskTagsTable taskTags = $TaskTagsTable(this);
+  late final $WorkNotesTable workNotes = $WorkNotesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2284,6 +2727,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     tags,
     projectTags,
     taskTags,
+    workNotes,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -4832,6 +5276,234 @@ typedef $$TaskTagsTableProcessedTableManager =
       TaskTag,
       PrefetchHooks Function({bool taskId, bool tagId})
     >;
+typedef $$WorkNotesTableCreateCompanionBuilder =
+    WorkNotesCompanion Function({
+      Value<int> id,
+      required String title,
+      Value<String?> content,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<String?> tags,
+      Value<bool> isArchived,
+    });
+typedef $$WorkNotesTableUpdateCompanionBuilder =
+    WorkNotesCompanion Function({
+      Value<int> id,
+      Value<String> title,
+      Value<String?> content,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<String?> tags,
+      Value<bool> isArchived,
+    });
+
+class $$WorkNotesTableFilterComposer
+    extends Composer<_$AppDatabase, $WorkNotesTable> {
+  $$WorkNotesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tags => $composableBuilder(
+    column: $table.tags,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isArchived => $composableBuilder(
+    column: $table.isArchived,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WorkNotesTableOrderingComposer
+    extends Composer<_$AppDatabase, $WorkNotesTable> {
+  $$WorkNotesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tags => $composableBuilder(
+    column: $table.tags,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isArchived => $composableBuilder(
+    column: $table.isArchived,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WorkNotesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $WorkNotesTable> {
+  $$WorkNotesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get content =>
+      $composableBuilder(column: $table.content, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get tags =>
+      $composableBuilder(column: $table.tags, builder: (column) => column);
+
+  GeneratedColumn<bool> get isArchived => $composableBuilder(
+    column: $table.isArchived,
+    builder: (column) => column,
+  );
+}
+
+class $$WorkNotesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $WorkNotesTable,
+          WorkNote,
+          $$WorkNotesTableFilterComposer,
+          $$WorkNotesTableOrderingComposer,
+          $$WorkNotesTableAnnotationComposer,
+          $$WorkNotesTableCreateCompanionBuilder,
+          $$WorkNotesTableUpdateCompanionBuilder,
+          (WorkNote, BaseReferences<_$AppDatabase, $WorkNotesTable, WorkNote>),
+          WorkNote,
+          PrefetchHooks Function()
+        > {
+  $$WorkNotesTableTableManager(_$AppDatabase db, $WorkNotesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WorkNotesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WorkNotesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WorkNotesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String?> content = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<String?> tags = const Value.absent(),
+                Value<bool> isArchived = const Value.absent(),
+              }) => WorkNotesCompanion(
+                id: id,
+                title: title,
+                content: content,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                tags: tags,
+                isArchived: isArchived,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String title,
+                Value<String?> content = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<String?> tags = const Value.absent(),
+                Value<bool> isArchived = const Value.absent(),
+              }) => WorkNotesCompanion.insert(
+                id: id,
+                title: title,
+                content: content,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                tags: tags,
+                isArchived: isArchived,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WorkNotesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $WorkNotesTable,
+      WorkNote,
+      $$WorkNotesTableFilterComposer,
+      $$WorkNotesTableOrderingComposer,
+      $$WorkNotesTableAnnotationComposer,
+      $$WorkNotesTableCreateCompanionBuilder,
+      $$WorkNotesTableUpdateCompanionBuilder,
+      (WorkNote, BaseReferences<_$AppDatabase, $WorkNotesTable, WorkNote>),
+      WorkNote,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -4847,4 +5519,6 @@ class $AppDatabaseManager {
       $$ProjectTagsTableTableManager(_db, _db.projectTags);
   $$TaskTagsTableTableManager get taskTags =>
       $$TaskTagsTableTableManager(_db, _db.taskTags);
+  $$WorkNotesTableTableManager get workNotes =>
+      $$WorkNotesTableTableManager(_db, _db.workNotes);
 }

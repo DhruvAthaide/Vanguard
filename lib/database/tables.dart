@@ -62,6 +62,16 @@ class TeamMembers extends Table {
   BoolColumn get isActive => boolean().withDefault(const Constant(true))();
 }
 
+class WorkNotes extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get title => text()();
+  TextColumn get content => text().nullable()();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+  TextColumn get tags => text().nullable()(); // Comma separated for simple tagging
+  BoolColumn get isArchived => boolean().withDefault(const Constant(false))();
+}
+
 class Tags extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get label => text().unique()();

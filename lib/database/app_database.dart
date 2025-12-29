@@ -14,19 +14,20 @@ part 'app_database.g.dart';
   TeamMembers,
   Tags,
   ProjectTags,
-  TaskTags
+  TaskTags,
+  WorkNotes
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   // Simple migration strategy: Drop and Recreate (Dev only)
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onUpgrade: (m, from, to) async {
-       if (from < 2) {
+       if (from < 4) {
          // In production, write proper migrations.
          // For dev speed, we wipe to ensure schema consistency.
          for (final table in allTables) {
