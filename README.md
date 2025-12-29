@@ -249,7 +249,7 @@ flutter build appbundle --release
 - [x] Glassmorphic design system
 
 ### Phase 2: Enhanced Features 🚧
-- [ ] Biometric authentication
+- [x] Biometric authentication
 - [ ] File attachments for tasks
 - [ ] Markdown notes with syntax highlighting
 - [ ] Export/import functionality
@@ -294,7 +294,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📧 Contact
 
-**Project Maintainer**: [Your Name]
+**Project Maintainer**: Dhruv Athaide
 - GitHub: [@DhruvAthaide](https://github.com/DhruvAthaide)
 - Email: athaidedhruv@gmail.com
 
