@@ -38,7 +38,7 @@ class QuickActions extends StatelessWidget {
             Expanded(
               child: _ActionButton(
                 icon: LucideIcons.plus,
-                label: "New Op",
+                label: "New Operation",
                 color: CyberTheme.accent,
                 onTap: onCreateProject,
               ),
