@@ -3,11 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import '../../../core/theme/cyber_theme.dart';
 import '../../../providers/vault_provider.dart';
 import '../../../database/app_database.dart';
 import '../../../providers/project_provider.dart'; // For databaseProvider
 import 'package:drift/drift.dart' as drift;
+import '../widgets/rich_note_editor.dart';
 
 class WorkNotesTab extends ConsumerWidget {
   const WorkNotesTab({super.key});
@@ -163,15 +165,43 @@ class _WorkNoteCard extends StatelessWidget {
           ),
           if (note.content != null && note.content!.isNotEmpty) ...[
             const SizedBox(height: 8),
-            Text(
-              note.content!,
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                color: Colors.white70,
-                height: 1.4,
+            // Use MarkdownBody to render the content preview
+            // Use MarkdownBody to render the content preview
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 60),
+              child: ShaderMask(
+                shaderCallback: (bounds) => const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.white, Colors.white, Colors.transparent],
+                  stops: [0.0, 0.7, 1.0],
+                ).createShader(bounds),
+                blendMode: BlendMode.dstIn,
+                child: ClipRect(
+                  child: MarkdownBody(
+                    data: note.content!,
+                    styleSheet: MarkdownStyleSheet(
+                      p: GoogleFonts.inter(
+                        fontSize: 14,
+                        color: Colors.white70,
+                        height: 1.4,
+                      ),
+                      strong: GoogleFonts.inter(
+                        fontWeight: FontWeight.bold,
+                        color: CyberTheme.accent,
+                      ),
+                      em: GoogleFonts.inter(
+                        fontStyle: FontStyle.italic,
+                        color: Colors.white,
+                      ),
+                      code: GoogleFonts.jetBrainsMono(
+                        backgroundColor: Colors.white.withOpacity(0.1),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
             ),
           ],
         ],
@@ -191,12 +221,16 @@ class _WorkNoteEditor extends ConsumerStatefulWidget {
 class _WorkNoteEditorState extends ConsumerState<_WorkNoteEditor> {
   late TextEditingController _titleCtrl;
   late TextEditingController _contentCtrl;
+  late bool _isPreview;
 
   @override
   void initState() {
     super.initState();
     _titleCtrl = TextEditingController(text: widget.note?.title ?? '');
-    _contentCtrl = TextEditingController(text: widget.note?.content ?? '');
+    // Use custom highlighter controller
+    _contentCtrl = MarkdownSyntaxHighlighter(text: widget.note?.content ?? '');
+    // Default to preview mode if editing an existing note
+    _isPreview = widget.note != null;
   }
 
   @override
@@ -229,6 +263,7 @@ class _WorkNoteEditorState extends ConsumerState<_WorkNoteEditor> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: MediaQuery.of(context).size.height * 0.85,
       padding: EdgeInsets.only(
         top: 24,
         left: 24,
@@ -240,17 +275,54 @@ class _WorkNoteEditorState extends ConsumerState<_WorkNoteEditor> {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            widget.note != null ? "EDIT LOG" : "NEW INTEL",
-            style: GoogleFonts.inter(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: CyberTheme.accent,
-              letterSpacing: 1.5,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                widget.note != null ? "EDIT LOG" : "NEW INTEL",
+                style: GoogleFonts.inter(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: CyberTheme.accent,
+                  letterSpacing: 1.5,
+                ),
+              ),
+              // Preview Toggle
+              GestureDetector(
+                onTap: () => setState(() => _isPreview = !_isPreview),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: _isPreview ? CyberTheme.accent.withOpacity(0.2) : Colors.transparent,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: _isPreview ? CyberTheme.accent : Colors.white.withOpacity(0.2),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        _isPreview ? LucideIcons.eyeOff : LucideIcons.eye,
+                        size: 14,
+                        color: _isPreview ? CyberTheme.accent : Colors.white60,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        _isPreview ? "EDIT" : "PREVIEW",
+                        style: GoogleFonts.inter(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: _isPreview ? CyberTheme.accent : Colors.white60,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 16),
           TextField(
@@ -267,39 +339,46 @@ class _WorkNoteEditorState extends ConsumerState<_WorkNoteEditor> {
             ),
           ),
           Divider(color: Colors.white.withOpacity(0.1)),
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxHeight: 300),
-            child: TextField(
-              controller: _contentCtrl,
-              maxLines: null,
-              style: GoogleFonts.inter(
-                fontSize: 16,
-                color: Colors.white70,
-                height: 1.5,
-              ),
-              decoration: InputDecoration(
-                hintText: "Enter details...",
-                hintStyle: GoogleFonts.inter(color: Colors.white38),
-                border: InputBorder.none,
-              ),
-            ),
+          const SizedBox(height: 12),
+          Expanded(
+            child: _isPreview
+                ? SingleChildScrollView(
+                    child: MarkdownBody(
+                      data: _contentCtrl.text.isEmpty ? "*No content*" : _contentCtrl.text,
+                      styleSheet: MarkdownStyleSheet(
+                        p: GoogleFonts.inter(fontSize: 16, color: Colors.white70),
+                        h1: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+                        h2: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                        strong: GoogleFonts.inter(fontWeight: FontWeight.bold, color: CyberTheme.accent),
+                        em: GoogleFonts.inter(fontStyle: FontStyle.italic, color: Colors.white),
+                        blockquote: GoogleFonts.inter(fontStyle: FontStyle.italic, color: Colors.white60),
+                        code: GoogleFonts.jetBrainsMono(backgroundColor: Colors.white.withOpacity(0.1)),
+                        listBullet: TextStyle(color: CyberTheme.accent),
+                      ),
+                    ),
+                  )
+                : RichNoteEditor(
+                    controller: _contentCtrl,
+                    initialText: widget.note?.content,
+                  ),
           ),
-          const SizedBox(height: 24),
-          ElevatedButton(
-            onPressed: _save,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: CyberTheme.accent,
-              foregroundColor: Colors.black,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+          const SizedBox(height: 16),
+          if (!_isPreview)
+            ElevatedButton(
+              onPressed: _save,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: CyberTheme.accent,
+                foregroundColor: Colors.black,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+              child: Text(
+                "SAVE RECORD",
+                style: GoogleFonts.inter(fontWeight: FontWeight.bold),
               ),
             ),
-            child: Text(
-              "SAVE RECORD",
-              style: GoogleFonts.inter(fontWeight: FontWeight.bold),
-            ),
-          ),
         ],
       ),
     );
