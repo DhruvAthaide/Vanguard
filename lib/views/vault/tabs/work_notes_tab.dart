@@ -41,7 +41,12 @@ class WorkNotesTab extends ConsumerWidget {
             );
           }
           return ListView.separated(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.only(
+              left: 24,
+              right: 24,
+              top: 24,
+              bottom: 120, // Space for Fab + Navbar
+            ),
             itemCount: notes.length,
             separatorBuilder: (_, __) => const SizedBox(height: 12),
             itemBuilder: (context, index) {

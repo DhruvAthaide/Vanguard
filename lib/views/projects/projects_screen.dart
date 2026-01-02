@@ -378,7 +378,7 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen>
 
                       return AnimationLimiter(
                         child: ListView.builder(
-                          padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                          padding: const EdgeInsets.fromLTRB(24, 0, 24, 120),
                           itemCount: projects.length,
                           itemBuilder: (context, index) {
                             return AnimationConfiguration.staggeredList(

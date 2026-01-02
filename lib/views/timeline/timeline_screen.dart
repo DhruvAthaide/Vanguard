@@ -107,7 +107,7 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen>
           SafeArea(
             child: Column(
               children: [
-                // Animated Header
+                // Header
                 SlideTransition(
                   position: _headerSlideAnimation,
                   child: FadeTransition(
@@ -148,37 +148,20 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen>
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                AnimatedBuilder(
-                                  animation: _glowController,
-                                  builder: (context, child) {
-                                    return ShaderMask(
-                                      shaderCallback: (bounds) {
-                                        return LinearGradient(
-                                          colors: [
-                                            CyberTheme.accent,
-                                            CyberTheme.accent.withOpacity(
-                                              0.7 + (_glowController.value * 0.3),
-                                            ),
-                                          ],
-                                        ).createShader(bounds);
-                                      },
-                                      child: Text(
-                                        "MISSION TIMELINE",
-                                        style: GoogleFonts.inter(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.white,
-                                          letterSpacing: 2.5,
-                                        ),
-                                      ),
-                                    );
-                                  },
+                                Text(
+                                  "MISSION TIMELINE",
+                                  style: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                    color: CyberTheme.accent,
+                                    letterSpacing: 2.5,
+                                  ),
                                 ),
-                                const SizedBox(height: 6),
+                                const SizedBox(height: 4),
                                 Text(
                                   "Operation Schedule",
                                   style: GoogleFonts.inter(
-                                    fontSize: 28,
+                                    fontSize: 24,
                                     fontWeight: FontWeight.w800,
                                     color: Colors.white,
                                     letterSpacing: -1.0,
@@ -242,7 +225,7 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen>
                   ),
                 ),
 
-                // Timeline Content
+                // Main Content
                 Expanded(
                   child: projectsAsync.when(
                     data: (projects) {

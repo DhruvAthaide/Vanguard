@@ -44,7 +44,12 @@ class _CyberNavBarState extends State<CyberNavBar>
   Widget build(BuildContext context) {
     return Container(
       height: 80,
-      margin: const EdgeInsets.all(16),
+      margin: EdgeInsets.only(
+        left: 16, 
+        right: 16, 
+        bottom: 16 + MediaQuery.of(context).padding.bottom, 
+        top: 16
+      ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(28),
         child: BackdropFilter(

@@ -117,7 +117,7 @@ class _IntelFeedScreenState extends ConsumerState<IntelFeedScreen>
                         : AnimationLimiter(
                       child: ListView.builder(
                         controller: _scrollController,
-                        padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+                        padding: const EdgeInsets.fromLTRB(20, 8, 20, 120),
                         itemCount: intel.length,
                         itemBuilder: (context, index) {
                           final item = intel[index];
