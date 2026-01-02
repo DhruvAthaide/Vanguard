@@ -26,6 +26,7 @@ class IntelService {
                 category: category,
                 source: feed.title ?? "Unknown Source",
                 url: item.link ?? "",
+                feedUrl: url, // Track the origin feed
                 publishedAt: item.pubDate ?? DateTime.now(),
               ),
             );

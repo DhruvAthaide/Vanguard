@@ -4,6 +4,7 @@ class IntelItem {
   final String category;
   final String source;
   final String url;
+  final String feedUrl; // The RSS feed this item came from
   final DateTime publishedAt;
 
   IntelItem({
@@ -12,6 +13,7 @@ class IntelItem {
     required this.category,
     required this.source,
     required this.url,
+    required this.feedUrl,
     required this.publishedAt,
   });
 }
