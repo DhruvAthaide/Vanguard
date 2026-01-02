@@ -110,35 +110,45 @@ class _IntelFeedScreenState extends ConsumerState<IntelFeedScreen>
 
                   // Content
                   Expanded(
-                    child: loading
-                        ? _buildLoadingState()
-                        : intel.isEmpty
-                        ? _buildEmptyState()
-                        : AnimationLimiter(
-                      child: ListView.builder(
-                        controller: _scrollController,
-                        padding: const EdgeInsets.fromLTRB(20, 8, 20, 120),
-                        itemCount: intel.length,
-                        itemBuilder: (context, index) {
-                          final item = intel[index];
+                    child: RefreshIndicator(
+                      onRefresh: () async {
+                        // Invalidate and wait for the new value
+                        return await ref.refresh(intelFeedProvider.future);
+                      },
+                      color: CyberTheme.accent,
+                      backgroundColor: CyberTheme.surface,
+                      child: loading
+                          ? _buildLoadingState()
+                          : intel.isEmpty
+                              ? _buildEmptyState()
+                              : AnimationLimiter(
+                                  child: ListView.builder(
+                                    // Ensure it's always scrollable for RefreshIndicator to work
+                                    physics: const AlwaysScrollableScrollPhysics(),
+                                    controller: _scrollController,
+                                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 120),
+                                    itemCount: intel.length,
+                                    itemBuilder: (context, index) {
+                                      final item = intel[index];
 
-                          return AnimationConfiguration.staggeredList(
-                            position: index,
-                            duration: const Duration(milliseconds: 700),
-                            child: SlideAnimation(
-                              verticalOffset: 60,
-                              curve: Curves.easeOutCubic,
-                              child: FadeInAnimation(
-                                curve: Curves.easeOut,
-                                child: IntelCard(
-                                  item: item,
-                                  index: index,
+                                      return AnimationConfiguration.staggeredList(
+                                        position: index,
+                                        duration: const Duration(milliseconds: 700),
+                                        child: SlideAnimation(
+                                          verticalOffset: 60,
+                                          curve: Curves.easeOutCubic,
+                                          child: FadeInAnimation(
+                                            curve: Curves.easeOut,
+                                            child: IntelCard(
+                                              item: item,
+                                              index: index,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
                                 ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
                     ),
                   ),
                 ],
@@ -324,46 +334,58 @@ class _IntelFeedScreenState extends ConsumerState<IntelFeedScreen>
   }
 
   Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(40),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                colors: [
-                  CyberTheme.accent.withOpacity(0.15),
-                  CyberTheme.accent.withOpacity(0.05),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: constraints.maxHeight,
+            ),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(40),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [
+                          CyberTheme.accent.withOpacity(0.15),
+                          CyberTheme.accent.withOpacity(0.05),
+                        ],
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.shield_outlined,
+                      size: 80,
+                      color: CyberTheme.accent.withOpacity(0.6),
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  Text(
+                    "All Clear",
+                    style: GoogleFonts.inter(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white.withOpacity(0.95),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    "No threats in this category",
+                    style: GoogleFonts.inter(
+                      fontSize: 15,
+                      color: Colors.white.withOpacity(0.6),
+                    ),
+                  ),
                 ],
               ),
             ),
-            child: Icon(
-              Icons.shield_outlined,
-              size: 80,
-              color: CyberTheme.accent.withOpacity(0.6),
-            ),
           ),
-          const SizedBox(height: 32),
-          Text(
-            "All Clear",
-            style: GoogleFonts.inter(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.white.withOpacity(0.95),
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            "No threats in this category",
-            style: GoogleFonts.inter(
-              fontSize: 15,
-              color: Colors.white.withOpacity(0.6),
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
