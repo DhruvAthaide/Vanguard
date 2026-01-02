@@ -147,37 +147,29 @@ class _CyberProjectCardState extends ConsumerState<CyberProjectCard>
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
                       child: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Colors.white.withOpacity(0.08),
-                              Colors.white.withOpacity(0.03),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(20),
+                        decoration: CyberTheme.glassDecoration.copyWith(
+                          color: CyberTheme.glass.withOpacity(0.7),
                           border: Border.all(
                             color: _priorityColor.withOpacity(0.3 * glowOpacity),
                             width: 1.5,
                           ),
                           boxShadow: widget.project.priority == 'critical' &&
-                              !widget.project.isArchived
+                                  !widget.project.isArchived
                               ? [
-                            BoxShadow(
-                              color: _priorityColor
-                                  .withOpacity(0.2 * glowOpacity),
-                              blurRadius: 16,
-                              spreadRadius: 2,
-                            ),
-                          ]
+                                  BoxShadow(
+                                    color: _priorityColor
+                                        .withOpacity(0.2 * glowOpacity),
+                                    blurRadius: 16,
+                                    spreadRadius: 2,
+                                  ),
+                                ]
                               : [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.3),
-                              blurRadius: 12,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.3),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
                         ),
                         child: child,
                       ),

@@ -285,9 +285,11 @@ class _IntelCardState extends State<IntelCard>
                                 // Footer Meta
                                 Row(
                                   children: [
-                                    _buildMetaChip(
-                                      icon: Icons.public,
-                                      text: widget.item.source,
+                                    Flexible(
+                                      child: _buildMetaChip(
+                                        icon: Icons.public,
+                                        text: widget.item.source,
+                                      ),
                                     ),
                                     const SizedBox(width: 10),
                                     _buildMetaChip(
@@ -378,12 +380,16 @@ class _IntelCardState extends State<IntelCard>
         children: [
           Icon(icon, size: 14, color: Colors.white.withOpacity(0.65)),
           const SizedBox(width: 7),
-          Text(
-            text,
-            style: GoogleFonts.inter(
-              fontSize: 12,
-              color: Colors.white.withOpacity(0.65),
-              fontWeight: FontWeight.w600,
+          Flexible(
+            child: Text(
+              text,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.inter(
+                fontSize: 12,
+                color: Colors.white.withOpacity(0.65),
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],

@@ -4,10 +4,44 @@ import 'package:google_fonts/google_fonts.dart';
 class CyberTheme {
   static const Color background = Color(0xFF0B0F14);
   static const Color surface = Color(0xFF111827);
-  static const Color glass = Color(0xAA111827);
+  static const Color glass = Color(0xCC111827); // Slightly more opaque for better readability
   static const Color accent = Color(0xFF38BDF8);
   static const Color danger = Color(0xFFEF4444);
   static const Color success = Color(0xFF22C55E);
+
+  /// Standard Glassmorphic Decoration
+  static BoxDecoration get glassDecoration => BoxDecoration(
+    color: glass,
+    borderRadius: BorderRadius.circular(16),
+    border: Border.all(
+      color: Colors.white.withOpacity(0.08),
+      width: 1,
+    ),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.2),
+        blurRadius: 16,
+        offset: const Offset(0, 8),
+      ),
+    ],
+  );
+
+  /// Active/Selected State Decoration (Glowing Border)
+  static BoxDecoration get activeDecoration => BoxDecoration(
+    color: glass,
+    borderRadius: BorderRadius.circular(16),
+    border: Border.all(
+      color: accent.withOpacity(0.5),
+      width: 1,
+    ),
+    boxShadow: [
+      BoxShadow(
+        color: accent.withOpacity(0.15),
+        blurRadius: 12,
+        offset: const Offset(0, 4),
+      ),
+    ],
+  );
 
   static ThemeData dark() {
     return ThemeData(
@@ -19,6 +53,7 @@ class CyberTheme {
         background: background,
         surface: surface,
         primary: accent,
+        secondary: accent,
         error: danger,
       ),
 
@@ -32,6 +67,9 @@ class CyberTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
+          side: BorderSide(
+            color: Colors.white.withOpacity(0.05),
+          ),
         ),
       ),
 

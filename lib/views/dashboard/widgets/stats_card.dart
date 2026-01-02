@@ -25,23 +25,15 @@ class StatsCard extends StatelessWidget {
         filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
         child: Container(
           padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                CyberTheme.surface.withOpacity(0.75),
-                CyberTheme.surface.withOpacity(0.55),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(20),
+          decoration: CyberTheme.glassDecoration.copyWith(
+            color: CyberTheme.glass.withOpacity(0.8),
             border: Border.all(
               color: color.withOpacity(0.3),
               width: 1.5,
             ),
             boxShadow: [
               BoxShadow(
-                color: color.withOpacity(0.15),
+                color: color.withOpacity(0.1),
                 blurRadius: 20,
                 offset: const Offset(0, 8),
               ),

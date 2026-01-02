@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../providers/intel_provider.dart';
 import '../../core/theme/cyber_theme.dart';
 import 'intel_card.dart';
 import 'intel_category_bar.dart';
+import 'widgets/intel_filter_dialog.dart';
 
 class IntelFeedScreen extends ConsumerStatefulWidget {
   const IntelFeedScreen({super.key});
@@ -176,132 +178,115 @@ class _IntelFeedScreenState extends ConsumerState<IntelFeedScreen>
 
   Widget _buildFloatingHeader(int threatCount) {
     return Container(
-      margin: const EdgeInsets.all(16),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(28),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  CyberTheme.surface.withOpacity(0.85),
-                  CyberTheme.surface.withOpacity(0.65),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(28),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.15),
-                width: 1.5,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: CyberTheme.accent.withOpacity(0.1),
-                  blurRadius: 30,
-                  offset: const Offset(0, 10),
-                ),
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  blurRadius: 20,
-                  offset: const Offset(0, 5),
-                ),
-              ],
-            ),
-            padding: const EdgeInsets.all(24),
-            child: Row(
-              children: [
-                // Icon with glow
-                AnimatedBuilder(
-                  animation: _pulseController,
-                  builder: (context, child) {
-                    return Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            CyberTheme.accent,
-                            CyberTheme.accent.withOpacity(0.7),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(18),
-                        boxShadow: [
-                          BoxShadow(
-                            color: CyberTheme.accent.withOpacity(0.4 + (_pulseController.value * 0.2)),
-                            blurRadius: 20 + (_pulseController.value * 10),
-                            spreadRadius: 2,
-                          ),
-                        ],
-                      ),
-                      child: const Icon(
-                        Icons.security_rounded,
-                        color: Colors.black,
-                        size: 32,
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(width: 18),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Intel Feed",
-                        style: GoogleFonts.inter(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w900,
-                          height: 1.0,
-                          letterSpacing: -0.5,
-                          foreground: Paint()
-                            ..shader = LinearGradient(
-                              colors: [
-                                Colors.white,
-                                Colors.white.withOpacity(0.85),
-                              ],
-                            ).createShader(
-                              const Rect.fromLTWH(0, 0, 200, 70),
-                            ),
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Row(
-                        children: [
-                          Container(
-                            width: 6,
-                            height: 6,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: CyberTheme.danger,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: CyberTheme.danger.withOpacity(0.5),
-                                  blurRadius: 8,
-                                  spreadRadius: 2,
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            "$threatCount threat${threatCount != 1 ? 's' : ''} detected",
-                            style: GoogleFonts.inter(
-                              fontSize: 13,
-                              color: Colors.white.withOpacity(0.7),
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.3,
-                            ),
-                          ),
-                        ],
-                      ),
+      margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      // Use standard glass decoration from theme but slightly modified for the header
+      decoration: CyberTheme.glassDecoration.copyWith(
+        color: CyberTheme.glass.withOpacity(0.85),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.12),
+          width: 1.5,
+        ),
+      ),
+      padding: const EdgeInsets.all(20),
+      child: Row(
+        children: [
+          // Icon with glow
+          AnimatedBuilder(
+            animation: _pulseController,
+            builder: (context, child) {
+              return Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      CyberTheme.accent,
+                      CyberTheme.accent.withOpacity(0.7),
                     ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: CyberTheme.accent
+                          .withOpacity(0.4 + (_pulseController.value * 0.2)),
+                      blurRadius: 16 + (_pulseController.value * 10),
+                      spreadRadius: 1,
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.security_rounded,
+                  color: Colors.black,
+                  size: 28,
+                ),
+              );
+            },
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "INTEL FEED",
+                  style: GoogleFonts.inter(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    color: CyberTheme.accent,
+                    letterSpacing: 2.0,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Text(
+                      "$threatCount",
+                      style: GoogleFonts.inter(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        height: 1.0,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      "Active Signals",
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white.withOpacity(0.6),
+                        height: 1.0,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
-        ),
+          
+          // Filter Button
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.05),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.white.withOpacity(0.08)),
+            ),
+            child: IconButton(
+              icon: const Icon(LucideIcons.filter),
+              color: Colors.white.withOpacity(0.8),
+              tooltip: "Filter Sources",
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  backgroundColor: Colors.transparent,
+                  isScrollControlled: true,
+                  builder: (context) => const IntelFilterDialog(),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

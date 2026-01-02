@@ -46,7 +46,7 @@ class _IntelCategoryBarState extends ConsumerState<IntelCategoryBar>
     ];
 
     return Container(
-      height: 76,
+      height: 60,
       margin: const EdgeInsets.only(bottom: 16),
       child: ListView.separated(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -75,7 +75,7 @@ class _IntelCategoryBarState extends ConsumerState<IntelCategoryBar>
                     duration: const Duration(milliseconds: 250),
                     curve: Curves.easeOutCubic,
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(22),
+                      borderRadius: BorderRadius.circular(18),
                       child: BackdropFilter(
                         filter: ImageFilter.blur(
                           sigmaX: isSelected || isHovered ? 16 : 12,
@@ -83,8 +83,8 @@ class _IntelCategoryBarState extends ConsumerState<IntelCategoryBar>
                         ),
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 26,
-                            vertical: 16,
+                            horizontal: 22,
+                            vertical: 12,
                           ),
                           decoration: BoxDecoration(
                             gradient: isSelected
@@ -104,7 +104,7 @@ class _IntelCategoryBarState extends ConsumerState<IntelCategoryBar>
                                       CyberTheme.surface.withOpacity(isHovered ? 0.35 : 0.25),
                                     ],
                                   ),
-                            borderRadius: BorderRadius.circular(22),
+                            borderRadius: BorderRadius.circular(18),
                             border: Border.all(
                               color: isSelected
                                   ? CyberTheme.accent.withOpacity(0.6)
