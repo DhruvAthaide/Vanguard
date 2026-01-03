@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/services.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:local_auth_android/local_auth_android.dart';
@@ -10,7 +9,6 @@ import '../services/secure_storage_service.dart';
 import '../services/pin_service.dart';
 import '../database/app_database.dart';
 import '../providers/project_provider.dart';
-import '../main.dart'; 
 
 // ─────────────────────────────────────────
 // PROVIDERS

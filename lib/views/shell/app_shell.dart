@@ -3,7 +3,6 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../dashboard/dashboard_screen.dart';
 import '../intel_feed/intel_feed_screen.dart';
 import '../projects/projects_screen.dart';
-import '../timeline/timeline_screen.dart';
 import '../vault/vault_screen.dart';
 import 'widgets/cyber_nav_bar.dart';
 
