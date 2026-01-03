@@ -95,17 +95,9 @@ class _VaultScreenState extends ConsumerState<VaultScreen> with SingleTickerProv
                               color: Colors.white,
                             ),
                           ),
-                          GestureDetector(
-                            onTap: () => Navigator.pop(context),
-                            child: Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.05),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: const Icon(LucideIcons.x, size: 20, color: Colors.white54),
-                            ),
-                          ),
+                          const SizedBox(width: 48), // Spacer to balance layout if needed, or just nothing.
+                          // Actually, just remove the icon.
+
                         ],
                       ),
                       const SizedBox(height: 24),
