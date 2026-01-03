@@ -4,10 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'dart:ui';
 import '../../../core/theme/cyber_theme.dart';
 import '../../../providers/vault_provider.dart';
 import '../../../database/app_database.dart';
-import '../../../providers/project_provider.dart'; // For databaseProvider
+import '../../../providers/project_provider.dart';
 import 'package:drift/drift.dart' as drift;
 import '../widgets/rich_note_editor.dart';
 
@@ -27,12 +28,29 @@ class WorkNotesTab extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(LucideIcons.fileText, size: 48, color: Colors.white24),
-                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.white.withOpacity(0.05),
+                          Colors.white.withOpacity(0.02),
+                        ],
+                      ),
+                    ),
+                    child: Icon(
+                      LucideIcons.fileText,
+                      size: 42,
+                      color: Colors.white.withOpacity(0.2),
+                    ),
+                  ),
+                  const SizedBox(height: 18),
                   Text(
                     "No Intel Logged",
                     style: GoogleFonts.inter(
-                      color: Colors.white38,
+                      fontSize: 16,
+                      color: Colors.white.withOpacity(0.4),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -42,13 +60,13 @@ class WorkNotesTab extends ConsumerWidget {
           }
           return ListView.separated(
             padding: const EdgeInsets.only(
-              left: 24,
-              right: 24,
-              top: 24,
-              bottom: 120, // Space for Fab + Navbar
+              left: 20,
+              right: 20,
+              top: 20,
+              bottom: 100,
             ),
             itemCount: notes.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
+            separatorBuilder: (_, __) => const SizedBox(height: 10),
             itemBuilder: (context, index) {
               final note = notes[index];
               return Dismissible(
@@ -59,9 +77,15 @@ class WorkNotesTab extends ConsumerWidget {
                     context: context,
                     builder: (context) => AlertDialog(
                       backgroundColor: CyberTheme.surface,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                       title: Text(
                         'Delete Note?',
-                        style: GoogleFonts.inter(color: Colors.white),
+                        style: GoogleFonts.inter(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                       content: Text(
                         'This action cannot be undone.',
@@ -70,13 +94,22 @@ class WorkNotesTab extends ConsumerWidget {
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(context, false),
-                          child: Text('CANCEL', style: GoogleFonts.inter()),
+                          child: Text(
+                            'CANCEL',
+                            style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white70,
+                            ),
+                          ),
                         ),
                         TextButton(
                           onPressed: () => Navigator.pop(context, true),
                           child: Text(
                             'DELETE',
-                            style: GoogleFonts.inter(color: CyberTheme.danger),
+                            style: GoogleFonts.inter(
+                              color: CyberTheme.danger,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
                       ],
@@ -86,17 +119,22 @@ class WorkNotesTab extends ConsumerWidget {
                 onDismissed: (direction) async {
                   final db = ref.read(databaseProvider);
                   await (db.delete(db.workNotes)
-                        ..where((t) => t.id.equals(note.id)))
+                    ..where((t) => t.id.equals(note.id)))
                       .go();
                 },
                 background: Container(
                   alignment: Alignment.centerRight,
-                  padding: const EdgeInsets.only(right: 20),
+                  padding: const EdgeInsets.only(right: 18),
                   decoration: BoxDecoration(
-                    color: CyberTheme.danger,
-                    borderRadius: BorderRadius.circular(16),
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.transparent,
+                        CyberTheme.danger.withOpacity(0.9),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(14),
                   ),
-                  child: const Icon(LucideIcons.trash2, color: Colors.white),
+                  child: const Icon(LucideIcons.trash2, color: Colors.white, size: 20),
                 ),
                 child: GestureDetector(
                   onTap: () => _showEditor(context, ref, note: note),
@@ -106,13 +144,24 @@ class WorkNotesTab extends ConsumerWidget {
             },
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, s) => Center(child: Text('Error: $e')),
+        loading: () => Center(
+          child: CircularProgressIndicator(
+            color: CyberTheme.accent,
+            strokeWidth: 3,
+          ),
+        ),
+        error: (e, s) => Center(
+          child: Text(
+            'Error: $e',
+            style: GoogleFonts.inter(color: CyberTheme.danger),
+          ),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showEditor(context, ref),
         backgroundColor: CyberTheme.accent,
-        child: const Icon(LucideIcons.plus, color: Colors.black),
+        elevation: 8,
+        child: const Icon(LucideIcons.plus, color: Colors.black, size: 22),
       ),
     );
   }
@@ -127,89 +176,115 @@ class WorkNotesTab extends ConsumerWidget {
   }
 }
 
-class _WorkNoteCard extends StatelessWidget {
+class _WorkNoteCard extends StatefulWidget {
   final WorkNote note;
 
   const _WorkNoteCard({required this.note});
 
   @override
+  State<_WorkNoteCard> createState() => _WorkNoteCardState();
+}
+
+class _WorkNoteCardState extends State<_WorkNoteCard> {
+  bool _isPressed = false;
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  note.title,
-                  style: GoogleFonts.inter(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: Colors.white,
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _isPressed = true),
+      onTapUp: (_) => setState(() => _isPressed = false),
+      onTapCancel: () => setState(() => _isPressed = false),
+      child: AnimatedScale(
+        scale: _isPressed ? 0.98 : 1.0,
+        duration: const Duration(milliseconds: 100),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(14),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.white.withOpacity(0.08),
+                    Colors.white.withOpacity(0.04),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: Colors.white.withOpacity(0.08)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          widget.note.title,
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 15,
+                            color: Colors.white,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        DateFormat('MMM dd HH:mm').format(widget.note.updatedAt),
+                        style: GoogleFonts.inter(
+                          fontSize: 10,
+                          color: Colors.white.withOpacity(0.4),
+                        ),
+                      ),
+                    ],
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              Text(
-                DateFormat('MMM dd HH:mm').format(note.updatedAt),
-                style: GoogleFonts.inter(
-                  fontSize: 11,
-                  color: Colors.white38,
-                ),
-              ),
-            ],
-          ),
-          if (note.content != null && note.content!.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            // Use MarkdownBody to render the content preview
-            // Use MarkdownBody to render the content preview
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 60),
-              child: ShaderMask(
-                shaderCallback: (bounds) => const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Colors.white, Colors.white, Colors.transparent],
-                  stops: [0.0, 0.7, 1.0],
-                ).createShader(bounds),
-                blendMode: BlendMode.dstIn,
-                child: ClipRect(
-                  child: MarkdownBody(
-                    data: note.content!,
-                    styleSheet: MarkdownStyleSheet(
-                      p: GoogleFonts.inter(
-                        fontSize: 14,
-                        color: Colors.white70,
-                        height: 1.4,
-                      ),
-                      strong: GoogleFonts.inter(
-                        fontWeight: FontWeight.bold,
-                        color: CyberTheme.accent,
-                      ),
-                      em: GoogleFonts.inter(
-                        fontStyle: FontStyle.italic,
-                        color: Colors.white,
-                      ),
-                      code: GoogleFonts.jetBrainsMono(
-                        backgroundColor: Colors.white.withOpacity(0.1),
-                        fontSize: 12,
+                  if (widget.note.content != null && widget.note.content!.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxHeight: 54),
+                      child: ShaderMask(
+                        shaderCallback: (bounds) => const LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Colors.white, Colors.white, Colors.transparent],
+                          stops: [0.0, 0.7, 1.0],
+                        ).createShader(bounds),
+                        blendMode: BlendMode.dstIn,
+                        child: ClipRect(
+                          child: MarkdownBody(
+                            data: widget.note.content!,
+                            styleSheet: MarkdownStyleSheet(
+                              p: GoogleFonts.inter(
+                                fontSize: 13,
+                                color: Colors.white70,
+                                height: 1.4,
+                              ),
+                              strong: GoogleFonts.inter(
+                                fontWeight: FontWeight.bold,
+                                color: CyberTheme.accent,
+                              ),
+                              em: GoogleFonts.inter(
+                                fontStyle: FontStyle.italic,
+                                color: Colors.white,
+                              ),
+                              code: GoogleFonts.jetBrainsMono(
+                                backgroundColor: Colors.white.withOpacity(0.1),
+                                fontSize: 11,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
+                  ],
+                ],
               ),
             ),
-          ],
-        ],
+          ),
+        ),
       ),
     );
   }
@@ -232,9 +307,7 @@ class _WorkNoteEditorState extends ConsumerState<_WorkNoteEditor> {
   void initState() {
     super.initState();
     _titleCtrl = TextEditingController(text: widget.note?.title ?? '');
-    // Use custom highlighter controller
     _contentCtrl = MarkdownSyntaxHighlighter(text: widget.note?.content ?? '');
-    // Default to preview mode if editing an existing note
     _isPreview = widget.note != null;
   }
 
@@ -252,139 +325,157 @@ class _WorkNoteEditorState extends ConsumerState<_WorkNoteEditor> {
     if (widget.note != null) {
       await (db.update(db.workNotes)..where((t) => t.id.equals(widget.note!.id)))
           .write(WorkNotesCompanion(
-            title: drift.Value(_titleCtrl.text),
-            content: drift.Value(_contentCtrl.text),
-            updatedAt: drift.Value(DateTime.now()),
-          ));
+        title: drift.Value(_titleCtrl.text),
+        content: drift.Value(_contentCtrl.text),
+        updatedAt: drift.Value(DateTime.now()),
+      ));
     } else {
       await db.into(db.workNotes).insert(WorkNotesCompanion.insert(
-            title: _titleCtrl.text,
-            content: drift.Value(_contentCtrl.text),
-          ));
+        title: _titleCtrl.text,
+        content: drift.Value(_contentCtrl.text),
+      ));
     }
     if (mounted) Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.85,
-      padding: EdgeInsets.only(
-        top: 24,
-        left: 24,
-        right: 24,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-      ),
-      decoration: BoxDecoration(
-        color: CyberTheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return ClipRRect(
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.85,
+          padding: EdgeInsets.only(
+            top: 20,
+            left: 20,
+            right: 20,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+          ),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                CyberTheme.surface.withOpacity(0.95),
+                CyberTheme.surface.withOpacity(0.98),
+              ],
+            ),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                widget.note != null ? "EDIT LOG" : "NEW INTEL",
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: CyberTheme.accent,
-                  letterSpacing: 1.5,
-                ),
-              ),
-              // Preview Toggle
-              GestureDetector(
-                onTap: () => setState(() => _isPreview = !_isPreview),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: _isPreview ? CyberTheme.accent.withOpacity(0.2) : Colors.transparent,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: _isPreview ? CyberTheme.accent : Colors.white.withOpacity(0.2),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    widget.note != null ? "EDIT LOG" : "NEW INTEL",
+                    style: GoogleFonts.inter(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: CyberTheme.accent,
+                      letterSpacing: 1.4,
                     ),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        _isPreview ? LucideIcons.eyeOff : LucideIcons.eye,
-                        size: 14,
-                        color: _isPreview ? CyberTheme.accent : Colors.white60,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        _isPreview ? "EDIT" : "PREVIEW",
-                        style: GoogleFonts.inter(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: _isPreview ? CyberTheme.accent : Colors.white60,
+                  // Preview Toggle
+                  GestureDetector(
+                    onTap: () => setState(() => _isPreview = !_isPreview),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: _isPreview ? CyberTheme.accent.withOpacity(0.2) : Colors.transparent,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: _isPreview ? CyberTheme.accent : Colors.white.withOpacity(0.2),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          TextField(
-            controller: _titleCtrl,
-            style: GoogleFonts.inter(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-            decoration: InputDecoration(
-              hintText: "Title",
-              hintStyle: GoogleFonts.inter(color: Colors.white38),
-              border: InputBorder.none,
-            ),
-          ),
-          Divider(color: Colors.white.withOpacity(0.1)),
-          const SizedBox(height: 12),
-          Expanded(
-            child: _isPreview
-                ? SingleChildScrollView(
-                    child: MarkdownBody(
-                      data: _contentCtrl.text.isEmpty ? "*No content*" : _contentCtrl.text,
-                      styleSheet: MarkdownStyleSheet(
-                        p: GoogleFonts.inter(fontSize: 16, color: Colors.white70),
-                        h1: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
-                        h2: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
-                        strong: GoogleFonts.inter(fontWeight: FontWeight.bold, color: CyberTheme.accent),
-                        em: GoogleFonts.inter(fontStyle: FontStyle.italic, color: Colors.white),
-                        blockquote: GoogleFonts.inter(fontStyle: FontStyle.italic, color: Colors.white60),
-                        code: GoogleFonts.jetBrainsMono(backgroundColor: Colors.white.withOpacity(0.1)),
-                        listBullet: TextStyle(color: CyberTheme.accent),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            _isPreview ? LucideIcons.eyeOff : LucideIcons.eye,
+                            size: 13,
+                            color: _isPreview ? CyberTheme.accent : Colors.white60,
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            _isPreview ? "EDIT" : "PREVIEW",
+                            style: GoogleFonts.inter(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                              color: _isPreview ? CyberTheme.accent : Colors.white60,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  )
-                : RichNoteEditor(
-                    controller: _contentCtrl,
-                    initialText: widget.note?.content,
                   ),
-          ),
-          const SizedBox(height: 16),
-          if (!_isPreview)
-            ElevatedButton(
-              onPressed: _save,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: CyberTheme.accent,
-                foregroundColor: Colors.black,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                ],
+              ),
+              const SizedBox(height: 14),
+              TextField(
+                controller: _titleCtrl,
+                style: GoogleFonts.inter(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+                decoration: InputDecoration(
+                  hintText: "Title",
+                  hintStyle: GoogleFonts.inter(color: Colors.white.withOpacity(0.35)),
+                  border: InputBorder.none,
                 ),
               ),
-              child: Text(
-                "SAVE RECORD",
-                style: GoogleFonts.inter(fontWeight: FontWeight.bold),
+              Divider(color: Colors.white.withOpacity(0.1)),
+              const SizedBox(height: 10),
+              Expanded(
+                child: _isPreview
+                    ? SingleChildScrollView(
+                  child: MarkdownBody(
+                    data: _contentCtrl.text.isEmpty ? "*No content*" : _contentCtrl.text,
+                    styleSheet: MarkdownStyleSheet(
+                      p: GoogleFonts.inter(fontSize: 15, color: Colors.white70),
+                      h1: GoogleFonts.inter(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
+                      h2: GoogleFonts.inter(fontSize: 19, fontWeight: FontWeight.bold, color: Colors.white),
+                      strong: GoogleFonts.inter(fontWeight: FontWeight.bold, color: CyberTheme.accent),
+                      em: GoogleFonts.inter(fontStyle: FontStyle.italic, color: Colors.white),
+                      blockquote: GoogleFonts.inter(fontStyle: FontStyle.italic, color: Colors.white60),
+                      code: GoogleFonts.jetBrainsMono(backgroundColor: Colors.white.withOpacity(0.1)),
+                      listBullet: TextStyle(color: CyberTheme.accent),
+                    ),
+                  ),
+                )
+                    : RichNoteEditor(
+                  controller: _contentCtrl,
+                  initialText: widget.note?.content,
+                ),
               ),
-            ),
-        ],
+              const SizedBox(height: 14),
+              if (!_isPreview)
+                ElevatedButton(
+                  onPressed: _save,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: CyberTheme.accent,
+                    foregroundColor: Colors.black,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    elevation: 4,
+                  ),
+                  child: Text(
+                    "SAVE RECORD",
+                    style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 13,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -19,18 +19,23 @@ class VaultScreen extends ConsumerStatefulWidget {
 class _VaultScreenState extends ConsumerState<VaultScreen> with SingleTickerProviderStateMixin {
   int _selectedIndex = 0; // 0 = Work Notes, 1 = Locked Vault
   static const platform = MethodChannel('com.dhruvathaide.vanguard/security');
+  late AnimationController _glowController;
 
   @override
   void initState() {
     super.initState();
-    // Initially unsecure (Work Notes are default)
     _updateSecurityState(0);
+
+    _glowController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+    )..repeat(reverse: true);
   }
 
   @override
   void dispose() {
-    // Ensure we clear the flag when leaving
     platform.invokeMethod('insecure');
+    _glowController.dispose();
     super.dispose();
   }
 
@@ -59,20 +64,29 @@ class _VaultScreenState extends ConsumerState<VaultScreen> with SingleTickerProv
       body: Stack(
         children: [
           // Background Gradient - Shifts based on tab
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 500),
-            decoration: BoxDecoration(
-              gradient: RadialGradient(
-                center: const Alignment(0, -0.5),
-                radius: 1.5,
-                colors: [
-                  _selectedIndex == 1 
-                      ? CyberTheme.danger.withOpacity(0.1) 
-                      : CyberTheme.accent.withOpacity(0.05),
-                  CyberTheme.background,
-                ],
-              ),
-            ),
+          AnimatedBuilder(
+            animation: _glowController,
+            builder: (context, child) {
+              return AnimatedContainer(
+                duration: const Duration(milliseconds: 500),
+                decoration: BoxDecoration(
+                  gradient: RadialGradient(
+                    center: Alignment(
+                      -0.5 + (_glowController.value * 0.3),
+                      -0.8 + (_glowController.value * 0.2),
+                    ),
+                    radius: 1.5,
+                    colors: [
+                      _selectedIndex == 1
+                          ? CyberTheme.danger.withOpacity(0.08)
+                          : CyberTheme.accent.withOpacity(0.04),
+                      CyberTheme.background,
+                      CyberTheme.background,
+                    ],
+                  ),
+                ),
+              );
+            },
           ),
 
           SafeArea(
@@ -80,34 +94,61 @@ class _VaultScreenState extends ConsumerState<VaultScreen> with SingleTickerProv
               children: [
                 // --- HEADER & SEGMENTED CONTROL ---
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
                   child: Column(
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
+                          AnimatedBuilder(
+                            animation: _glowController,
+                            builder: (context, child) {
+                              return Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      (_selectedIndex == 1 ? CyberTheme.danger : CyberTheme.accent),
+                                      (_selectedIndex == 1 ? CyberTheme.danger : CyberTheme.accent).withOpacity(0.7),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: (_selectedIndex == 1 ? CyberTheme.danger : CyberTheme.accent)
+                                          .withOpacity(0.3 + (_glowController.value * 0.15)),
+                                      blurRadius: 12 + (_glowController.value * 6),
+                                      spreadRadius: 0,
+                                    ),
+                                  ],
+                                ),
+                                child: Icon(
+                                  _selectedIndex == 1 ? LucideIcons.shieldAlert : LucideIcons.shield,
+                                  color: Colors.black,
+                                  size: 20,
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(width: 12),
                           Text(
                             "COMMAND VAULT",
                             style: GoogleFonts.inter(
-                              fontSize: 18,
+                              fontSize: 16,
                               fontWeight: FontWeight.w800,
-                              letterSpacing: 2.0,
+                              letterSpacing: 1.8,
                               color: Colors.white,
                             ),
                           ),
-                          const SizedBox(width: 48), // Spacer to balance layout if needed, or just nothing.
-                          // Actually, just remove the icon.
-
                         ],
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 20),
                       Container(
-                        height: 50,
-                        padding: const EdgeInsets.all(4),
+                        height: 44,
+                        padding: const EdgeInsets.all(3),
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.05),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: Colors.white.withOpacity(0.05)),
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(color: Colors.white.withOpacity(0.08)),
                         ),
                         child: LayoutBuilder(
                           builder: (context, constraints) {
@@ -116,25 +157,32 @@ class _VaultScreenState extends ConsumerState<VaultScreen> with SingleTickerProv
                               children: [
                                 // Sliding Indicator
                                 AnimatedPositioned(
-                                  duration: const Duration(milliseconds: 300),
-                                  curve: Curves.easeOutBack,
+                                  duration: const Duration(milliseconds: 280),
+                                  curve: Curves.easeOutCubic,
                                   left: _selectedIndex * width,
                                   top: 0,
                                   bottom: 0,
                                   child: Container(
                                     width: width,
                                     decoration: BoxDecoration(
-                                      color: _selectedIndex == 1 
-                                          ? CyberTheme.danger.withOpacity(0.9) 
-                                          : CyberTheme.accent.withOpacity(0.9),
-                                      borderRadius: BorderRadius.circular(12),
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          _selectedIndex == 1
+                                              ? CyberTheme.danger
+                                              : CyberTheme.accent,
+                                          (_selectedIndex == 1
+                                              ? CyberTheme.danger
+                                              : CyberTheme.accent).withOpacity(0.85),
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(11),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: (_selectedIndex == 1 
-                                              ? CyberTheme.danger 
+                                          color: (_selectedIndex == 1
+                                              ? CyberTheme.danger
                                               : CyberTheme.accent).withOpacity(0.3),
-                                          blurRadius: 12,
-                                          offset: const Offset(0, 4),
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 3),
                                         ),
                                       ],
                                     ),
@@ -151,8 +199,9 @@ class _VaultScreenState extends ConsumerState<VaultScreen> with SingleTickerProv
                                           child: AnimatedDefaultTextStyle(
                                             duration: const Duration(milliseconds: 200),
                                             style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 13,
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 12,
+                                              letterSpacing: 0.5,
                                               color: _selectedIndex == 0 ? Colors.black : Colors.white54,
                                             ),
                                             child: const Text("WORK NOTES"),
@@ -173,16 +222,17 @@ class _VaultScreenState extends ConsumerState<VaultScreen> with SingleTickerProv
                                                 child: Icon(
                                                   LucideIcons.lock,
                                                   key: ValueKey(_selectedIndex == 1),
-                                                  size: 14,
+                                                  size: 13,
                                                   color: _selectedIndex == 1 ? Colors.black : Colors.white54,
                                                 ),
                                               ),
-                                              const SizedBox(width: 8),
+                                              const SizedBox(width: 7),
                                               AnimatedDefaultTextStyle(
                                                 duration: const Duration(milliseconds: 200),
                                                 style: GoogleFonts.inter(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w700,
+                                                  fontSize: 12,
+                                                  letterSpacing: 0.5,
                                                   color: _selectedIndex == 1 ? Colors.black : Colors.white54,
                                                 ),
                                                 child: const Text("LOCKED VAULT"),
@@ -206,7 +256,9 @@ class _VaultScreenState extends ConsumerState<VaultScreen> with SingleTickerProv
                 // --- CONTENT ---
                 Expanded(
                   child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 400),
+                    duration: const Duration(milliseconds: 350),
+                    switchInCurve: Curves.easeOut,
+                    switchOutCurve: Curves.easeIn,
                     child: _selectedIndex == 0
                         ? const WorkNotesTab()
                         : const BiometricGate(child: LockedVaultTab()),
