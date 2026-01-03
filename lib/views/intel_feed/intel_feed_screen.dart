@@ -97,76 +97,61 @@ class _IntelFeedScreenState extends ConsumerState<IntelFeedScreen>
           ),
         ),
         child: SafeArea(
-          child: Stack(
+          child: Column(
             children: [
-              // Main Content
-              Column(
-                children: [
-                  const SizedBox(height: 140), // Space for floating header
-                  
-                  // Category Bar
-                  FadeTransition(
-                    opacity: _headerFadeAnimation,
-                    child: const IntelCategoryBar(),
-                  ),
-
-                  // Content
-                  Expanded(
-                    child: RefreshIndicator(
-                      onRefresh: () async {
-                        // Invalidate and wait for the new value
-                        return await ref.refresh(intelFeedProvider.future);
-                      },
-                      color: CyberTheme.accent,
-                      backgroundColor: CyberTheme.surface,
-                      child: loading
-                          ? _buildLoadingState()
-                          : intel.isEmpty
-                              ? _buildEmptyState()
-                              : AnimationLimiter(
-                                  child: ListView.builder(
-                                    // Ensure it's always scrollable for RefreshIndicator to work
-                                    physics: const AlwaysScrollableScrollPhysics(),
-                                    controller: _scrollController,
-                                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 120),
-                                    itemCount: intel.length,
-                                    itemBuilder: (context, index) {
-                                      final item = intel[index];
-
-                                      return AnimationConfiguration.staggeredList(
-                                        position: index,
-                                        duration: const Duration(milliseconds: 700),
-                                        child: SlideAnimation(
-                                          verticalOffset: 60,
-                                          curve: Curves.easeOutCubic,
-                                          child: FadeInAnimation(
-                                            curve: Curves.easeOut,
-                                            child: IntelCard(
-                                              item: item,
-                                              index: index,
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                    ),
-                  ),
-                ],
+              // Header (Static)
+              FadeTransition(
+                opacity: _headerFadeAnimation,
+                child: _buildFloatingHeader(intel.length),
               ),
 
-              // Floating Header with Parallax
-              Positioned(
-                top: -parallaxOffset,
-                left: 0,
-                right: 0,
-                child: SlideTransition(
-                  position: _headerSlideAnimation,
-                  child: FadeTransition(
-                    opacity: _headerFadeAnimation,
-                    child: _buildFloatingHeader(intel.length),
-                  ),
+              // Category Bar
+              FadeTransition(
+                opacity: _headerFadeAnimation,
+                child: const IntelCategoryBar(),
+              ),
+
+              // Content
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    // Invalidate and wait for the new value
+                    return await ref.refresh(intelFeedProvider.future);
+                  },
+                  color: CyberTheme.accent,
+                  backgroundColor: CyberTheme.surface,
+                  child: loading
+                      ? _buildLoadingState()
+                      : intel.isEmpty
+                          ? _buildEmptyState()
+                          : AnimationLimiter(
+                              child: ListView.builder(
+                                // Ensure it's always scrollable for RefreshIndicator to work
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                controller: _scrollController,
+                                padding: const EdgeInsets.fromLTRB(20, 8, 20, 120),
+                                itemCount: intel.length,
+                                itemBuilder: (context, index) {
+                                  final item = intel[index];
+
+                                  return AnimationConfiguration.staggeredList(
+                                    position: index,
+                                    duration: const Duration(milliseconds: 700),
+                                    child: SlideAnimation(
+                                      verticalOffset: 60,
+                                      curve: Curves.easeOutCubic,
+                                      child: FadeInAnimation(
+                                        curve: Curves.easeOut,
+                                        child: IntelCard(
+                                          item: item,
+                                          index: index,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
                 ),
               ),
             ],
