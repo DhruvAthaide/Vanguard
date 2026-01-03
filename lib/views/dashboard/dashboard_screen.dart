@@ -83,26 +83,28 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
         children: [
           // Animated gradient background
           Positioned.fill(
-            child: AnimatedBuilder(
-              animation: _glowController,
-              builder: (context, child) {
-                return Container(
-                  decoration: BoxDecoration(
-                    gradient: RadialGradient(
-                      center: Alignment(
-                        -0.5 + (_glowController.value * 0.3),
-                        -0.8 + (_glowController.value * 0.2),
+            child: RepaintBoundary(
+              child: AnimatedBuilder(
+                animation: _glowController,
+                builder: (context, child) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      gradient: RadialGradient(
+                        center: Alignment(
+                          -0.5 + (_glowController.value * 0.3),
+                          -0.8 + (_glowController.value * 0.2),
+                        ),
+                        radius: 1.5,
+                        colors: [
+                          CyberTheme.accent.withOpacity(0.04),
+                          CyberTheme.background,
+                          CyberTheme.background,
+                        ],
                       ),
-                      radius: 1.5,
-                      colors: [
-                        CyberTheme.accent.withOpacity(0.04),
-                        CyberTheme.background,
-                        CyberTheme.background,
-                      ],
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
 

@@ -64,29 +64,31 @@ class _VaultScreenState extends ConsumerState<VaultScreen> with SingleTickerProv
       body: Stack(
         children: [
           // Background Gradient - Shifts based on tab
-          AnimatedBuilder(
-            animation: _glowController,
-            builder: (context, child) {
-              return AnimatedContainer(
-                duration: const Duration(milliseconds: 500),
-                decoration: BoxDecoration(
-                  gradient: RadialGradient(
-                    center: Alignment(
-                      -0.5 + (_glowController.value * 0.3),
-                      -0.8 + (_glowController.value * 0.2),
+          RepaintBoundary(
+            child: AnimatedBuilder(
+              animation: _glowController,
+              builder: (context, child) {
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 500),
+                  decoration: BoxDecoration(
+                    gradient: RadialGradient(
+                      center: Alignment(
+                        -0.5 + (_glowController.value * 0.3),
+                        -0.8 + (_glowController.value * 0.2),
+                      ),
+                      radius: 1.5,
+                      colors: [
+                        _selectedIndex == 1
+                            ? CyberTheme.danger.withOpacity(0.08)
+                            : CyberTheme.accent.withOpacity(0.04),
+                        CyberTheme.background,
+                        CyberTheme.background,
+                      ],
                     ),
-                    radius: 1.5,
-                    colors: [
-                      _selectedIndex == 1
-                          ? CyberTheme.danger.withOpacity(0.08)
-                          : CyberTheme.accent.withOpacity(0.04),
-                      CyberTheme.background,
-                      CyberTheme.background,
-                    ],
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
 
           SafeArea(
