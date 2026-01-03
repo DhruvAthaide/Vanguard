@@ -66,7 +66,8 @@ class _AddProjectSheetState extends ConsumerState<AddProjectSheet>
           filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
           child: Container(
             padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 
+                      MediaQuery.of(context).padding.bottom + 24,
               top: 24,
               left: 24,
               right: 24,

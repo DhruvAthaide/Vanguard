@@ -35,6 +35,7 @@ class _ProjectDetailScreenState extends ConsumerState<ProjectDetailScreen>
     _modeTransitionController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
+      value: 1.0, // Start fully visible
     );
 
     _headerController = AnimationController(
