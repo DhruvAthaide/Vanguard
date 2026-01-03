@@ -25,9 +25,9 @@ final allSourceUrlsProvider = Provider<List<String>>((ref) {
 });
 
 final intelFeedProvider =
-FutureProvider<List<IntelItem>>((ref) async {
+StreamProvider<List<IntelItem>>((ref) {
   final service = ref.watch(intelServiceProvider);
-  return service.fetchAllIntel();
+  return service.streamIntel();
 });
 
 final filteredIntelProvider =
