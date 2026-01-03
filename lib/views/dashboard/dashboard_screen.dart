@@ -34,7 +34,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
 
     _headerController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 1000),
     );
 
     _glowController = AnimationController(
@@ -58,7 +58,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
     ).animate(
       CurvedAnimation(
         parent: _headerController,
-        curve: const Interval(0.0, 0.7, curve: Curves.easeOutCubic),
+        curve: const Interval(0.0, 0.6, curve: Curves.easeOutCubic),
       ),
     );
 
@@ -116,7 +116,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                     child: FadeTransition(
                       opacity: _headerFadeAnimation,
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -137,31 +137,31 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                                   child: Text(
                                     "COMMAND CENTER",
                                     style: GoogleFonts.inter(
-                                      fontSize: 12,
+                                      fontSize: 11,
                                       fontWeight: FontWeight.w700,
                                       color: Colors.white,
-                                      letterSpacing: 2.5,
+                                      letterSpacing: 2.2,
                                     ),
                                   ),
                                 );
                               },
                             ),
-                            const SizedBox(height: 6),
+                            const SizedBox(height: 5),
                             Text(
                               "Mission Overview",
                               style: GoogleFonts.inter(
-                                fontSize: 32,
+                                fontSize: 28,
                                 fontWeight: FontWeight.w800,
                                 color: Colors.white,
-                                letterSpacing: -1.0,
+                                letterSpacing: -0.8,
                                 height: 1.0,
                               ),
                             ),
-                            const SizedBox(height: 8),
+                            const SizedBox(height: 6),
                             Text(
                               _getGreeting(),
                               style: GoogleFonts.inter(
-                                fontSize: 14,
+                                fontSize: 13,
                                 color: Colors.white.withOpacity(0.6),
                                 fontWeight: FontWeight.w500,
                               ),
@@ -175,7 +175,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
 
                 // Stats Cards
                 SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   sliver: SliverToBoxAdapter(
                     child: FadeTransition(
                       opacity: _headerFadeAnimation,
@@ -193,7 +193,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                                   color: CyberTheme.accent,
                                 ),
                               ),
-                              const SizedBox(width: 12),
+                              const SizedBox(width: 10),
                               Expanded(
                                 child: intelAsync.when(
                                   data: (intel) => StatsCard(
@@ -226,11 +226,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                   ),
                 ),
 
-                const SliverToBoxAdapter(child: SizedBox(height: 24)),
+                const SliverToBoxAdapter(child: SizedBox(height: 20)),
 
                 // Quick Actions
                 SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   sliver: SliverToBoxAdapter(
                     child: FadeTransition(
                       opacity: _headerFadeAnimation,
@@ -248,7 +248,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                             context,
                             PageRouteBuilder(
                               pageBuilder: (context, animation, secondaryAnimation) =>
-                                  const TimelineScreen(),
+                              const TimelineScreen(),
                               transitionsBuilder:
                                   (context, animation, secondaryAnimation, child) {
                                 return FadeTransition(
@@ -260,11 +260,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                           );
                         },
                         onViewIntel: () {
-                          // Switch to Intel tab (index 1)
                           appShellKey.currentState?.switchTab(1);
                         },
                         onViewVault: () {
-                          // Switch to Vault tab (index 3)
                           appShellKey.currentState?.switchTab(3);
                         },
                       ),
@@ -272,11 +270,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                   ),
                 ),
 
-                const SliverToBoxAdapter(child: SizedBox(height: 24)),
+                const SliverToBoxAdapter(child: SizedBox(height: 20)),
 
                 // Project Progress
                 SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   sliver: SliverToBoxAdapter(
                     child: FadeTransition(
                       opacity: _headerFadeAnimation,
@@ -293,11 +291,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                   ),
                 ),
 
-                const SliverToBoxAdapter(child: SizedBox(height: 24)),
+                const SliverToBoxAdapter(child: SizedBox(height: 20)),
 
                 // Intel Highlights
                 SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   sliver: SliverToBoxAdapter(
                     child: FadeTransition(
                       opacity: _headerFadeAnimation,
@@ -313,7 +311,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                   ),
                 ),
 
-                const SliverToBoxAdapter(child: SizedBox(height: 100)),
+                const SliverToBoxAdapter(child: SizedBox(height: 90)),
               ],
             ),
           ),

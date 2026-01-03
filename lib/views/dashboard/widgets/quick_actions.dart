@@ -26,13 +26,13 @@ class QuickActions extends StatelessWidget {
         Text(
           "Quick Actions",
           style: GoogleFonts.inter(
-            fontSize: 16,
+            fontSize: 15,
             fontWeight: FontWeight.w700,
             color: Colors.white.withOpacity(0.9),
             letterSpacing: 0.3,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 10),
         Row(
           children: [
             Expanded(
@@ -43,7 +43,7 @@ class QuickActions extends StatelessWidget {
                 onTap: onCreateProject,
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 10),
             Expanded(
               child: _ActionButton(
                 icon: LucideIcons.calendar,
@@ -54,7 +54,7 @@ class QuickActions extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 10),
         Row(
           children: [
             Expanded(
@@ -65,7 +65,7 @@ class QuickActions extends StatelessWidget {
                 onTap: onViewIntel ?? () {},
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 10),
             Expanded(
               child: _ActionButton(
                 icon: LucideIcons.lock,
@@ -111,33 +111,33 @@ class _ActionButtonState extends State<_ActionButton> {
       },
       onTapCancel: () => setState(() => _isPressed = false),
       child: AnimatedScale(
-        scale: _isPressed ? 0.95 : 1.0,
+        scale: _isPressed ? 0.96 : 1.0,
         duration: const Duration(milliseconds: 100),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(14),
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    widget.color.withOpacity(0.25),
-                    widget.color.withOpacity(0.15),
+                    widget.color.withOpacity(0.22),
+                    widget.color.withOpacity(0.12),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(14),
                 border: Border.all(
-                  color: widget.color.withOpacity(0.4),
-                  width: 1.5,
+                  color: widget.color.withOpacity(0.35),
+                  width: 1.2,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: widget.color.withOpacity(0.2),
-                    blurRadius: 15,
-                    offset: const Offset(0, 6),
+                    color: widget.color.withOpacity(0.18),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
@@ -148,14 +148,14 @@ class _ActionButtonState extends State<_ActionButton> {
                   Icon(
                     widget.icon,
                     color: widget.color,
-                    size: 18,
+                    size: 16,
                   ),
                   const SizedBox(width: 6),
                   Flexible(
                     child: Text(
                       widget.label,
                       style: GoogleFonts.inter(
-                        fontSize: 12,
+                        fontSize: 11,
                         fontWeight: FontWeight.w700,
                         color: widget.color,
                         letterSpacing: 0.2,
