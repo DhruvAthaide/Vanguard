@@ -29,10 +29,10 @@ class _IntelFeedScreenState extends ConsumerState<IntelFeedScreen>
   @override
   void initState() {
     super.initState();
-    
+
     _headerController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 1000),
     );
 
     _pulseController = AnimationController(
@@ -81,7 +81,6 @@ class _IntelFeedScreenState extends ConsumerState<IntelFeedScreen>
   Widget build(BuildContext context) {
     final intel = ref.watch(filteredIntelProvider);
     final loading = ref.watch(intelFeedProvider).isLoading;
-    final parallaxOffset = (_scrollOffset * 0.3).clamp(0.0, 100.0);
 
     return Scaffold(
       body: Container(
@@ -99,10 +98,13 @@ class _IntelFeedScreenState extends ConsumerState<IntelFeedScreen>
         child: SafeArea(
           child: Column(
             children: [
-              // Header (Static)
+              // Header
               FadeTransition(
                 opacity: _headerFadeAnimation,
-                child: _buildFloatingHeader(intel.length),
+                child: SlideTransition(
+                  position: _headerSlideAnimation,
+                  child: _buildFloatingHeader(intel.length),
+                ),
               ),
 
               // Category Bar
@@ -115,7 +117,6 @@ class _IntelFeedScreenState extends ConsumerState<IntelFeedScreen>
               Expanded(
                 child: RefreshIndicator(
                   onRefresh: () async {
-                    // Invalidate and wait for the new value
                     return await ref.refresh(intelFeedProvider.future);
                   },
                   color: CyberTheme.accent,
@@ -123,35 +124,34 @@ class _IntelFeedScreenState extends ConsumerState<IntelFeedScreen>
                   child: loading
                       ? _buildLoadingState()
                       : intel.isEmpty
-                          ? _buildEmptyState()
-                          : AnimationLimiter(
-                              child: ListView.builder(
-                                // Ensure it's always scrollable for RefreshIndicator to work
-                                physics: const AlwaysScrollableScrollPhysics(),
-                                controller: _scrollController,
-                                padding: const EdgeInsets.fromLTRB(20, 8, 20, 120),
-                                itemCount: intel.length,
-                                itemBuilder: (context, index) {
-                                  final item = intel[index];
+                      ? _buildEmptyState()
+                      : AnimationLimiter(
+                    child: ListView.builder(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      controller: _scrollController,
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
+                      itemCount: intel.length,
+                      itemBuilder: (context, index) {
+                        final item = intel[index];
 
-                                  return AnimationConfiguration.staggeredList(
-                                    position: index,
-                                    duration: const Duration(milliseconds: 700),
-                                    child: SlideAnimation(
-                                      verticalOffset: 60,
-                                      curve: Curves.easeOutCubic,
-                                      child: FadeInAnimation(
-                                        curve: Curves.easeOut,
-                                        child: IntelCard(
-                                          item: item,
-                                          index: index,
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
+                        return AnimationConfiguration.staggeredList(
+                          position: index,
+                          duration: const Duration(milliseconds: 600),
+                          child: SlideAnimation(
+                            verticalOffset: 50,
+                            curve: Curves.easeOutCubic,
+                            child: FadeInAnimation(
+                              curve: Curves.easeOut,
+                              child: IntelCard(
+                                item: item,
+                                index: index,
                               ),
                             ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -163,16 +163,16 @@ class _IntelFeedScreenState extends ConsumerState<IntelFeedScreen>
 
   Widget _buildFloatingHeader(int threatCount) {
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-      // Use standard glass decoration from theme but slightly modified for the header
+      margin: const EdgeInsets.fromLTRB(16, 12, 16, 8),
       decoration: CyberTheme.glassDecoration.copyWith(
-        color: CyberTheme.glass.withOpacity(0.85),
+        color: CyberTheme.glass.withOpacity(0.9),
+        borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: Colors.white.withOpacity(0.12),
-          width: 1.5,
+          color: Colors.white.withOpacity(0.1),
+          width: 1,
         ),
       ),
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
       child: Row(
         children: [
           // Icon with glow
@@ -180,35 +180,35 @@ class _IntelFeedScreenState extends ConsumerState<IntelFeedScreen>
             animation: _pulseController,
             builder: (context, child) {
               return Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
                       CyberTheme.accent,
-                      CyberTheme.accent.withOpacity(0.7),
+                      CyberTheme.accent.withOpacity(0.8),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(14),
                   boxShadow: [
                     BoxShadow(
                       color: CyberTheme.accent
-                          .withOpacity(0.4 + (_pulseController.value * 0.2)),
-                      blurRadius: 16 + (_pulseController.value * 10),
-                      spreadRadius: 1,
+                          .withOpacity(0.35 + (_pulseController.value * 0.15)),
+                      blurRadius: 14 + (_pulseController.value * 8),
+                      spreadRadius: 0,
                     ),
                   ],
                 ),
                 child: const Icon(
                   Icons.security_rounded,
                   color: Colors.black,
-                  size: 28,
+                  size: 24,
                 ),
               );
             },
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -216,31 +216,31 @@ class _IntelFeedScreenState extends ConsumerState<IntelFeedScreen>
                 Text(
                   "INTEL FEED",
                   style: GoogleFonts.inter(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
                     color: CyberTheme.accent,
-                    letterSpacing: 2.0,
+                    letterSpacing: 1.8,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 2),
                 Row(
                   children: [
                     Text(
                       "$threatCount",
                       style: GoogleFonts.inter(
-                        fontSize: 24,
+                        fontSize: 22,
                         fontWeight: FontWeight.w800,
                         color: Colors.white,
                         height: 1.0,
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 7),
                     Text(
                       "Active Signals",
                       style: GoogleFonts.inter(
-                        fontSize: 14,
+                        fontSize: 13,
                         fontWeight: FontWeight.w500,
-                        color: Colors.white.withOpacity(0.6),
+                        color: Colors.white.withOpacity(0.65),
                         height: 1.0,
                       ),
                     ),
@@ -249,18 +249,22 @@ class _IntelFeedScreenState extends ConsumerState<IntelFeedScreen>
               ],
             ),
           ),
-          
+
           // Filter Button
           Container(
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.05),
+              color: Colors.white.withOpacity(0.06),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.white.withOpacity(0.08)),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.1),
+              ),
             ),
             child: IconButton(
-              icon: const Icon(LucideIcons.filter),
-              color: Colors.white.withOpacity(0.8),
+              icon: const Icon(LucideIcons.filter, size: 18),
+              color: Colors.white.withOpacity(0.85),
               tooltip: "Filter Sources",
+              padding: const EdgeInsets.all(10),
+              constraints: const BoxConstraints(),
               onPressed: () {
                 showModalBottomSheet(
                   context: context,
@@ -282,18 +286,18 @@ class _IntelFeedScreenState extends ConsumerState<IntelFeedScreen>
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
-            width: 70,
-            height: 70,
+            width: 60,
+            height: 60,
             child: CircularProgressIndicator(
-              strokeWidth: 4,
+              strokeWidth: 3.5,
               valueColor: AlwaysStoppedAnimation<Color>(CyberTheme.accent),
             ),
           ),
-          const SizedBox(height: 28),
+          const SizedBox(height: 24),
           Text(
             "Scanning for threats...",
             style: GoogleFonts.inter(
-              fontSize: 16,
+              fontSize: 15,
               color: Colors.white.withOpacity(0.8),
               fontWeight: FontWeight.w600,
             ),
@@ -317,7 +321,7 @@ class _IntelFeedScreenState extends ConsumerState<IntelFeedScreen>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(40),
+                    padding: const EdgeInsets.all(36),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: LinearGradient(
@@ -329,24 +333,24 @@ class _IntelFeedScreenState extends ConsumerState<IntelFeedScreen>
                     ),
                     child: Icon(
                       Icons.shield_outlined,
-                      size: 80,
+                      size: 72,
                       color: CyberTheme.accent.withOpacity(0.6),
                     ),
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 28),
                   Text(
                     "All Clear",
                     style: GoogleFonts.inter(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 26,
+                      fontWeight: FontWeight.w700,
                       color: Colors.white.withOpacity(0.95),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
                   Text(
                     "No threats in this category",
                     style: GoogleFonts.inter(
-                      fontSize: 15,
+                      fontSize: 14,
                       color: Colors.white.withOpacity(0.6),
                     ),
                   ),

@@ -46,13 +46,13 @@ class _IntelCategoryBarState extends ConsumerState<IntelCategoryBar>
     ];
 
     return Container(
-      height: 60,
-      margin: const EdgeInsets.only(bottom: 16),
+      height: 48,
+      margin: const EdgeInsets.only(bottom: 12),
       child: ListView.separated(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         scrollDirection: Axis.horizontal,
         itemCount: categories.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        separatorBuilder: (_, __) => const SizedBox(width: 8),
         itemBuilder: (context, index) {
           final category = categories[index];
           final isSelected = category == selected;
@@ -63,7 +63,7 @@ class _IntelCategoryBarState extends ConsumerState<IntelCategoryBar>
             onExit: (_) => setState(() => _hoveredIndex = null),
             child: TweenAnimationBuilder<double>(
               tween: Tween(begin: 0.0, end: isSelected ? 1.0 : 0.0),
-              duration: const Duration(milliseconds: 350),
+              duration: const Duration(milliseconds: 300),
               curve: Curves.easeOutCubic,
               builder: (context, value, child) {
                 return GestureDetector(
@@ -71,68 +71,68 @@ class _IntelCategoryBarState extends ConsumerState<IntelCategoryBar>
                     ref.read(selectedCategoryProvider.notifier).state = category;
                   },
                   child: AnimatedScale(
-                    scale: isSelected ? 1.0 : (isHovered ? 1.05 : 0.96),
-                    duration: const Duration(milliseconds: 250),
+                    scale: isSelected ? 1.0 : (isHovered ? 1.04 : 0.98),
+                    duration: const Duration(milliseconds: 200),
                     curve: Curves.easeOutCubic,
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(18),
+                      borderRadius: BorderRadius.circular(14),
                       child: BackdropFilter(
                         filter: ImageFilter.blur(
-                          sigmaX: isSelected || isHovered ? 16 : 12,
-                          sigmaY: isSelected || isHovered ? 16 : 12,
+                          sigmaX: isSelected || isHovered ? 14 : 10,
+                          sigmaY: isSelected || isHovered ? 14 : 10,
                         ),
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 22,
-                            vertical: 12,
+                            horizontal: 16,
+                            vertical: 8,
                           ),
                           decoration: BoxDecoration(
                             gradient: isSelected
                                 ? LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      CyberTheme.accent,
-                                      CyberTheme.accent.withOpacity(0.85),
-                                    ],
-                                  )
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                CyberTheme.accent,
+                                CyberTheme.accent.withOpacity(0.9),
+                              ],
+                            )
                                 : LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      CyberTheme.surface.withOpacity(isHovered ? 0.5 : 0.35),
-                                      CyberTheme.surface.withOpacity(isHovered ? 0.35 : 0.25),
-                                    ],
-                                  ),
-                            borderRadius: BorderRadius.circular(18),
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                CyberTheme.surface.withOpacity(isHovered ? 0.55 : 0.4),
+                                CyberTheme.surface.withOpacity(isHovered ? 0.4 : 0.3),
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(14),
                             border: Border.all(
                               color: isSelected
-                                  ? CyberTheme.accent.withOpacity(0.6)
-                                  : Colors.white.withOpacity(isHovered ? 0.2 : 0.12),
-                              width: isSelected ? 2.0 : 1.5,
+                                  ? CyberTheme.accent.withOpacity(0.5)
+                                  : Colors.white.withOpacity(isHovered ? 0.15 : 0.1),
+                              width: isSelected ? 1.5 : 1,
                             ),
                             boxShadow: isSelected
                                 ? [
-                                    BoxShadow(
-                                      color: CyberTheme.accent.withOpacity(0.35),
-                                      blurRadius: 20,
-                                      offset: const Offset(0, 6),
-                                    ),
-                                    BoxShadow(
-                                      color: CyberTheme.accent.withOpacity(0.15),
-                                      blurRadius: 30,
-                                      spreadRadius: 2,
-                                    ),
-                                  ]
+                              BoxShadow(
+                                color: CyberTheme.accent.withOpacity(0.3),
+                                blurRadius: 16,
+                                offset: const Offset(0, 4),
+                              ),
+                              BoxShadow(
+                                color: CyberTheme.accent.withOpacity(0.12),
+                                blurRadius: 24,
+                                spreadRadius: 1,
+                              ),
+                            ]
                                 : isHovered
-                                    ? [
-                                        BoxShadow(
-                                          color: Colors.white.withOpacity(0.1),
-                                          blurRadius: 15,
-                                          offset: const Offset(0, 4),
-                                        ),
-                                      ]
-                                    : null,
+                                ? [
+                              BoxShadow(
+                                color: Colors.white.withOpacity(0.08),
+                                blurRadius: 12,
+                                offset: const Offset(0, 3),
+                              ),
+                            ]
+                                : null,
                           ),
                           child: Center(
                             child: Row(
@@ -143,19 +143,19 @@ class _IntelCategoryBarState extends ConsumerState<IntelCategoryBar>
                                     animation: _pulseController,
                                     builder: (context, child) {
                                       return Container(
-                                        width: 7,
-                                        height: 7,
-                                        margin: const EdgeInsets.only(right: 10),
+                                        width: 6,
+                                        height: 6,
+                                        margin: const EdgeInsets.only(right: 8),
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
                                           color: Colors.black,
                                           boxShadow: [
                                             BoxShadow(
                                               color: Colors.black.withOpacity(
-                                                0.4 * _pulseController.value,
+                                                0.35 * _pulseController.value,
                                               ),
-                                              blurRadius: 10 * _pulseController.value,
-                                              spreadRadius: 3 * _pulseController.value,
+                                              blurRadius: 8 * _pulseController.value,
+                                              spreadRadius: 2 * _pulseController.value,
                                             ),
                                           ],
                                         ),
@@ -168,12 +168,12 @@ class _IntelCategoryBarState extends ConsumerState<IntelCategoryBar>
                                   style: GoogleFonts.inter(
                                     color: isSelected
                                         ? Colors.black
-                                        : Colors.white.withOpacity(isHovered ? 0.95 : 0.85),
+                                        : Colors.white.withOpacity(isHovered ? 0.95 : 0.8),
                                     fontWeight: isSelected
-                                        ? FontWeight.w800
-                                        : FontWeight.w700,
-                                    fontSize: 14,
-                                    letterSpacing: 0.3,
+                                        ? FontWeight.w700
+                                        : FontWeight.w600,
+                                    fontSize: 13,
+                                    letterSpacing: 0.2,
                                   ),
                                 ),
                               ],
