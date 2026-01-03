@@ -20,7 +20,7 @@ class TimelineScreen extends ConsumerStatefulWidget {
 class _TimelineScreenState extends ConsumerState<TimelineScreen>
     with TickerProviderStateMixin {
   double _pxPerDay = 24.0;
-  final double _headerWidth = 180.0;
+  final double _headerWidth = 130.0;
 
   late AnimationController _headerController;
   late AnimationController _glowController;
@@ -581,15 +581,20 @@ class _LinkedScrollBodyState extends State<_LinkedScrollBody> {
                   children: [
                     // Week Grid Background
                     Positioned.fill(
-                      child: Row(
-                        children: List.generate(
-                          (widget.totalWidth / (widget.pxPerDay * 7)).ceil(),
-                              (i) => Container(
-                            width: widget.pxPerDay * 7,
-                            decoration: BoxDecoration(
-                              border: Border(
-                                right: BorderSide(
-                                  color: Colors.white.withOpacity(0.03),
+                      child: OverflowBox(
+                        minWidth: 0,
+                        maxWidth: double.infinity,
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          children: List.generate(
+                            (widget.totalWidth / (widget.pxPerDay * 7)).ceil() + 1,
+                                (i) => Container(
+                              width: widget.pxPerDay * 7,
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  right: BorderSide(
+                                    color: Colors.white.withOpacity(0.03),
+                                  ),
                                 ),
                               ),
                             ),

@@ -27,56 +27,111 @@ class TimelineHeader extends StatelessWidget {
     double currentX = 0;
     final safeMax = maxDate.add(const Duration(days: 30));
 
-    while (cursor.isBefore(safeMax)) {
-      final dateStr = DateFormat('MMM dd').format(cursor);
-      final weekOfYear = _getWeekOfYear(cursor);
+    if (pxPerDay > 32) {
+      // Intricate Day View
+      while (cursor.isBefore(safeMax)) {
+        final dateStr = DateFormat('d').format(cursor);
+        final dayName = DateFormat('E').format(cursor);
+        final isToday = DateFormat('yyyy-MM-dd').format(cursor) ==
+            DateFormat('yyyy-MM-dd').format(DateTime.now());
 
-      weeks.add(
-        Positioned(
-          left: currentX,
-          top: 0,
-          child: Container(
-            width: pxPerDay * 7,
-            height: 50,
-            decoration: BoxDecoration(
-              border: Border(
-                left: BorderSide(
-                  color: Colors.white.withOpacity(0.08),
-                  width: 1,
+        weeks.add(
+          Positioned(
+            left: currentX,
+            top: 0,
+            child: Container(
+              width: pxPerDay,
+              height: 50,
+              decoration: BoxDecoration(
+                border: Border(
+                  left: BorderSide(
+                    color: Colors.white.withOpacity(0.05),
+                    width: 1,
+                  ),
                 ),
+                color: isToday ? CyberTheme.accent.withOpacity(0.05) : null,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    dayName.toUpperCase(),
+                    style: GoogleFonts.robotoMono(
+                      fontSize: 10,
+                      color: isToday ? CyberTheme.accent : Colors.white54,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    dateStr,
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: isToday ? Colors.white : Colors.white70,
+                    ),
+                  ),
+                ],
               ),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'WEEK $weekOfYear',
-                  style: GoogleFonts.robotoMono(
-                    fontSize: 9,
-                    color: CyberTheme.accent.withOpacity(0.6),
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 0.5,
+          ),
+        );
+
+        cursor = cursor.add(const Duration(days: 1));
+        currentX += pxPerDay;
+      }
+    } else {
+      // Week View
+      while (cursor.isBefore(safeMax)) {
+        final dateStr = DateFormat('MMM dd').format(cursor);
+        final weekOfYear = _getWeekOfYear(cursor);
+
+        weeks.add(
+          Positioned(
+            left: currentX,
+            top: 0,
+            child: Container(
+              width: pxPerDay * 7,
+              height: 50,
+              decoration: BoxDecoration(
+                border: Border(
+                  left: BorderSide(
+                    color: Colors.white.withOpacity(0.08),
+                    width: 1,
                   ),
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  dateStr,
-                  style: GoogleFonts.inter(
-                    fontSize: 11,
-                    color: Colors.white.withOpacity(0.7),
-                    fontWeight: FontWeight.w600,
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'WEEK $weekOfYear',
+                    style: GoogleFonts.robotoMono(
+                      fontSize: 9,
+                      color: CyberTheme.accent.withOpacity(0.6),
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.5,
+                    ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 2),
+                  Text(
+                    dateStr,
+                    style: GoogleFonts.inter(
+                      fontSize: 11,
+                      color: Colors.white.withOpacity(0.7),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      );
+        );
 
-      cursor = cursor.add(const Duration(days: 7));
-      currentX += pxPerDay * 7;
+        cursor = cursor.add(const Duration(days: 7));
+        currentX += pxPerDay * 7;
+      }
     }
 
     return ClipRRect(
