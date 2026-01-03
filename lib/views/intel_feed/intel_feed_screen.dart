@@ -9,6 +9,7 @@ import '../../core/theme/cyber_theme.dart';
 import 'intel_card.dart';
 import 'intel_category_bar.dart';
 import 'widgets/intel_filter_dialog.dart';
+import 'widgets/threat_map.dart';
 
 class IntelFeedScreen extends ConsumerStatefulWidget {
   const IntelFeedScreen({super.key});
@@ -24,7 +25,9 @@ class _IntelFeedScreenState extends ConsumerState<IntelFeedScreen>
   late Animation<double> _headerFadeAnimation;
   late Animation<Offset> _headerSlideAnimation;
   final ScrollController _scrollController = ScrollController();
+
   double _scrollOffset = 0.0;
+  bool _isMapView = false;
 
   @override
   void initState() {
@@ -85,17 +88,29 @@ class _IntelFeedScreenState extends ConsumerState<IntelFeedScreen>
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              CyberTheme.background,
-              CyberTheme.background.withOpacity(0.85),
-              CyberTheme.surface.withOpacity(0.3),
-            ],
-          ),
+          color: CyberTheme.background, // Fallback color
         ),
-        child: SafeArea(
+        child: Stack(
+          children: [
+            // Optimized Background
+            RepaintBoundary(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      CyberTheme.background,
+                      CyberTheme.background.withOpacity(0.85),
+                      CyberTheme.surface.withOpacity(0.3),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            
+            // Content
+            SafeArea(
           child: Column(
             children: [
               // Header
@@ -125,37 +140,40 @@ class _IntelFeedScreenState extends ConsumerState<IntelFeedScreen>
                       ? _buildLoadingState()
                       : intel.isEmpty
                       ? _buildEmptyState()
-                      : AnimationLimiter(
-                    child: ListView.builder(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      controller: _scrollController,
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
-                      itemCount: intel.length,
-                      itemBuilder: (context, index) {
-                        final item = intel[index];
-
-                        return AnimationConfiguration.staggeredList(
-                          position: index,
-                          duration: const Duration(milliseconds: 600),
-                          child: SlideAnimation(
-                            verticalOffset: 50,
-                            curve: Curves.easeOutCubic,
-                            child: FadeInAnimation(
-                              curve: Curves.easeOut,
-                              child: IntelCard(
-                                item: item,
-                                index: index,
+                      : _isMapView
+                          ? ThreatMapWidget(items: intel)
+                          : AnimationLimiter(
+                              child: ListView.builder(
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                controller: _scrollController,
+                                padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
+                                itemCount: intel.length,
+                                itemBuilder: (context, index) {
+                                  final item = intel[index];
+                                  return AnimationConfiguration.staggeredList(
+                                    position: index,
+                                    duration: const Duration(milliseconds: 600),
+                                    child: SlideAnimation(
+                                      verticalOffset: 50,
+                                      curve: Curves.easeOutCubic,
+                                      child: FadeInAnimation(
+                                        curve: Curves.easeOut,
+                                        child: IntelCard(
+                                          item: item,
+                                          index: index,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
                 ),
               ),
             ],
           ),
+        ),
+          ],
         ),
       ),
     );
@@ -235,13 +253,16 @@ class _IntelFeedScreenState extends ConsumerState<IntelFeedScreen>
                       ),
                     ),
                     const SizedBox(width: 7),
-                    Text(
-                      "Active Signals",
-                      style: GoogleFonts.inter(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white.withOpacity(0.65),
-                        height: 1.0,
+                    Flexible(
+                      child: Text(
+                        "Active Signals",
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.inter(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white.withOpacity(0.65),
+                          height: 1.0,
+                        ),
                       ),
                     ),
                   ],
@@ -250,32 +271,123 @@ class _IntelFeedScreenState extends ConsumerState<IntelFeedScreen>
             ),
           ),
 
-          // Filter Button
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.06),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.1),
+          // View Toggle & Filter
+          Row(
+            children: [
+              // Premium View Toggle
+              Container(
+                height: 40,
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: CyberTheme.accent.withOpacity(0.15),
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildToggleBtn(
+                      icon: LucideIcons.list,
+                      label: "Feed",
+                      isActive: !_isMapView,
+                      onTap: () => setState(() => _isMapView = false),
+                    ),
+                    const SizedBox(width: 4),
+                    _buildToggleBtn(
+                      icon: LucideIcons.globe,
+                      label: "Map", 
+                      isActive: _isMapView,
+                      onTap: () => setState(() => _isMapView = true),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            child: IconButton(
-              icon: const Icon(LucideIcons.filter, size: 18),
-              color: Colors.white.withOpacity(0.85),
-              tooltip: "Filter Sources",
-              padding: const EdgeInsets.all(10),
-              constraints: const BoxConstraints(),
-              onPressed: () {
-                showModalBottomSheet(
-                  context: context,
-                  backgroundColor: Colors.transparent,
-                  isScrollControlled: true,
-                  builder: (context) => const IntelFilterDialog(),
-                );
-              },
-            ),
+              const SizedBox(width: 12),
+              
+              // Filter Button
+              Container(
+                height: 40,
+                width: 40,
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: CyberTheme.accent.withOpacity(0.15),
+                    width: 1,
+                  ),
+                ),
+                child: IconButton(
+                  icon: const Icon(LucideIcons.filter, size: 18),
+                  color: CyberTheme.accent.withOpacity(0.8),
+                  tooltip: "Filter Sources",
+                  padding: EdgeInsets.zero,
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      backgroundColor: Colors.transparent,
+                      isScrollControlled: true,
+                      builder: (context) => const IntelFilterDialog(),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildToggleBtn({
+    required IconData icon,
+    required String label,
+    required bool isActive,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: isActive ? CyberTheme.accent.withOpacity(0.15) : Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isActive ? CyberTheme.accent.withOpacity(0.3) : Colors.transparent,
+            width: 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              size: 14,
+              color: isActive ? CyberTheme.accent : Colors.white.withOpacity(0.5),
+            ),
+            if (isActive) ...[
+              const SizedBox(width: 6),
+              Text(
+                label,
+                style: GoogleFonts.inter(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: CyberTheme.accent,
+                ),
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }
