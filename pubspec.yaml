@@ -47,6 +47,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.14.4
 
   build_runner: ^2.4.9
   drift_dev: ^2.18.0
@@ -56,3 +57,9 @@ dev_dependencies:
 flutter:
 
   uses-material-design: true
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/vanguardlogo.png"
+  min_sdk_android: 21
