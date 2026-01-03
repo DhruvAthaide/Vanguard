@@ -31,7 +31,7 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen>
 
     _headerController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
+      duration: const Duration(milliseconds: 800),
     );
 
     _glowController = AnimationController(
@@ -55,7 +55,7 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen>
     ).animate(
       CurvedAnimation(
         parent: _headerController,
-        curve: const Interval(0.0, 0.7, curve: Curves.easeOutCubic),
+        curve: const Interval(0.0, 0.6, curve: Curves.easeOutCubic),
       ),
     );
 
@@ -113,7 +113,7 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen>
                   child: FadeTransition(
                     opacity: _headerFadeAnimation,
                     child: Container(
-                      padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+                      padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
                       child: Column(
                         children: [
                           Row(
@@ -140,23 +140,23 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen>
                                           child: Text(
                                             "COMMAND CENTER",
                                             style: GoogleFonts.inter(
-                                              fontSize: 12,
+                                              fontSize: 11,
                                               fontWeight: FontWeight.w700,
                                               color: Colors.white,
-                                              letterSpacing: 2.5,
+                                              letterSpacing: 2.2,
                                             ),
                                           ),
                                         );
                                       },
                                     ),
-                                    const SizedBox(height: 6),
+                                    const SizedBox(height: 4),
                                     Text(
                                       "Active Operations",
                                       style: GoogleFonts.inter(
-                                        fontSize: 32,
+                                        fontSize: 28,
                                         fontWeight: FontWeight.w800,
                                         color: Colors.white,
-                                        letterSpacing: -1.0,
+                                        letterSpacing: -0.8,
                                         height: 1.0,
                                       ),
                                     ),
@@ -165,7 +165,7 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen>
                               ),
                               // Action Buttons
                               ClipRRect(
-                                borderRadius: BorderRadius.circular(16),
+                                borderRadius: BorderRadius.circular(14),
                                 child: BackdropFilter(
                                   filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                                   child: Container(
@@ -176,7 +176,7 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen>
                                           Colors.white.withOpacity(0.04),
                                         ],
                                       ),
-                                      borderRadius: BorderRadius.circular(16),
+                                      borderRadius: BorderRadius.circular(14),
                                       border: Border.all(
                                         color: Colors.white.withOpacity(0.1),
                                       ),
@@ -206,7 +206,7 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen>
                                         ),
                                         Container(
                                           width: 1,
-                                          height: 24,
+                                          height: 20,
                                           color: Colors.white.withOpacity(0.1),
                                         ),
                                         _ActionButton(
@@ -240,18 +240,18 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen>
                   opacity: _headerFadeAnimation,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
                       children: [
                         // Search Field
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(24),
+                          borderRadius: BorderRadius.circular(20),
                           child: BackdropFilter(
                             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                             child: Container(
-                              width: 220,
-                              height: 48,
-                              margin: const EdgeInsets.only(right: 12),
+                              width: 200,
+                              height: 44,
+                              margin: const EdgeInsets.only(right: 10),
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
@@ -259,7 +259,7 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen>
                                     Colors.white.withOpacity(0.03),
                                   ],
                                 ),
-                                borderRadius: BorderRadius.circular(24),
+                                borderRadius: BorderRadius.circular(20),
                                 border: Border.all(
                                   color: Colors.white.withOpacity(0.1),
                                 ),
@@ -267,7 +267,7 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen>
                               child: TextField(
                                 onChanged: filterCtrl.setSearch,
                                 style: GoogleFonts.inter(
-                                  fontSize: 14,
+                                  fontSize: 13,
                                   color: Colors.white,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -276,15 +276,16 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen>
                                   hintStyle: GoogleFonts.inter(
                                     color: Colors.white.withOpacity(0.4),
                                     fontWeight: FontWeight.w500,
+                                    fontSize: 13,
                                   ),
                                   prefixIcon: Icon(
                                     LucideIcons.search,
-                                    size: 18,
+                                    size: 16,
                                     color: Colors.white.withOpacity(0.5),
                                   ),
                                   border: InputBorder.none,
                                   contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 14,
+                                    vertical: 12,
                                   ),
                                 ),
                               ),
@@ -320,7 +321,7 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen>
                   ),
                 ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: 20),
 
                 // --- PROJECT LIST ---
                 Expanded(
@@ -334,7 +335,7 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen>
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Container(
-                                  padding: const EdgeInsets.all(32),
+                                  padding: const EdgeInsets.all(28),
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     gradient: LinearGradient(
@@ -349,24 +350,24 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen>
                                   ),
                                   child: Icon(
                                     LucideIcons.folder,
-                                    size: 56,
+                                    size: 48,
                                     color: Colors.white.withOpacity(0.2),
                                   ),
                                 ),
-                                const SizedBox(height: 24),
+                                const SizedBox(height: 20),
                                 Text(
                                   "No Operations Found",
                                   style: GoogleFonts.inter(
-                                    fontSize: 18,
+                                    fontSize: 17,
                                     fontWeight: FontWeight.w600,
                                     color: Colors.white.withOpacity(0.6),
                                   ),
                                 ),
-                                const SizedBox(height: 8),
+                                const SizedBox(height: 6),
                                 Text(
                                   "Create a new operation to get started",
                                   style: GoogleFonts.inter(
-                                    fontSize: 14,
+                                    fontSize: 13,
                                     color: Colors.white.withOpacity(0.4),
                                   ),
                                 ),
@@ -378,14 +379,14 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen>
 
                       return AnimationLimiter(
                         child: ListView.builder(
-                          padding: const EdgeInsets.fromLTRB(24, 0, 24, 120),
+                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 100),
                           itemCount: projects.length,
                           itemBuilder: (context, index) {
                             return AnimationConfiguration.staggeredList(
                               position: index,
-                              duration: const Duration(milliseconds: 500),
+                              duration: const Duration(milliseconds: 450),
                               child: SlideAnimation(
-                                verticalOffset: 50.0,
+                                verticalOffset: 40.0,
                                 curve: Curves.easeOutCubic,
                                 child: FadeInAnimation(
                                   curve: Curves.easeOut,
@@ -405,7 +406,7 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen>
                                               opacity: animation,
                                               child: SlideTransition(
                                                 position: Tween<Offset>(
-                                                  begin: const Offset(0.1, 0),
+                                                  begin: const Offset(0.05, 0),
                                                   end: Offset.zero,
                                                 ).animate(animation),
                                                 child: child,
@@ -428,8 +429,8 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen>
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SizedBox(
-                            width: 50,
-                            height: 50,
+                            width: 45,
+                            height: 45,
                             child: CircularProgressIndicator(
                               strokeWidth: 3,
                               valueColor: AlwaysStoppedAnimation<Color>(
@@ -437,12 +438,13 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen>
                               ),
                             ),
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 18),
                           Text(
                             "Loading operations...",
                             style: GoogleFonts.inter(
                               color: Colors.white.withOpacity(0.6),
                               fontWeight: FontWeight.w500,
+                              fontSize: 14,
                             ),
                           ),
                         ],
@@ -454,13 +456,16 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen>
                         children: [
                           Icon(
                             LucideIcons.alertCircle,
-                            size: 48,
+                            size: 44,
                             color: CyberTheme.danger,
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 14),
                           Text(
                             "Error: $e",
-                            style: GoogleFonts.inter(color: CyberTheme.danger),
+                            style: GoogleFonts.inter(
+                              color: CyberTheme.danger,
+                              fontSize: 14,
+                            ),
                           ),
                         ],
                       ),
@@ -511,11 +516,11 @@ class _ActionButtonState extends State<_ActionButton> {
           scale: _isPressed ? 0.9 : 1.0,
           duration: const Duration(milliseconds: 100),
           child: Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(10),
             child: Icon(
               widget.icon,
               color: widget.isAccent ? CyberTheme.accent : Colors.white70,
-              size: 20,
+              size: 18,
             ),
           ),
         ),
@@ -592,14 +597,14 @@ class _FilterChipState extends State<_FilterChip>
           animation: _controller,
           builder: (context, child) {
             return ClipRRect(
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(20),
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                 child: Container(
                   margin: const EdgeInsets.only(right: 8),
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 18,
-                    vertical: 12,
+                    horizontal: 14,
+                    vertical: 10,
                   ),
                   decoration: BoxDecoration(
                     gradient: widget.isActive
@@ -615,18 +620,18 @@ class _FilterChipState extends State<_FilterChip>
                         Colors.white.withOpacity(0.03),
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(24),
+                    borderRadius: BorderRadius.circular(20),
                     border: Border.all(
                       color: widget.isActive
                           ? widget.color
-                          .withOpacity(0.4 + (_controller.value * 0.2))
+                          .withOpacity(0.35 + (_controller.value * 0.15))
                           : Colors.white.withOpacity(0.1),
-                      width: 1.5,
+                      width: 1.2,
                     ),
                     boxShadow: widget.isActive
                         ? [
                       BoxShadow(
-                        color: widget.color.withOpacity(0.2),
+                        color: widget.color.withOpacity(0.18),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -639,7 +644,7 @@ class _FilterChipState extends State<_FilterChip>
                       if (widget.icon != null) ...[
                         Icon(
                           widget.icon,
-                          size: 14,
+                          size: 13,
                           color: widget.isActive
                               ? widget.color
                               : Colors.white.withOpacity(0.6),
@@ -649,7 +654,7 @@ class _FilterChipState extends State<_FilterChip>
                       Text(
                         widget.label,
                         style: GoogleFonts.inter(
-                          fontSize: 13,
+                          fontSize: 12,
                           fontWeight:
                           widget.isActive ? FontWeight.w700 : FontWeight.w600,
                           color: widget.isActive

@@ -98,7 +98,7 @@ class _CyberProjectCardState extends ConsumerState<CyberProjectCard>
       onTapCancel: () => setState(() => _isPressed = false),
       child: AnimatedScale(
         scale: _isPressed ? 0.98 : 1.0,
-        duration: const Duration(milliseconds: 150),
+        duration: const Duration(milliseconds: 120),
         curve: Curves.easeOut,
         child: AnimatedBuilder(
           animation: _pulseAnimation,
@@ -108,7 +108,7 @@ class _CyberProjectCardState extends ConsumerState<CyberProjectCard>
                 : 1.0;
 
             return Container(
-              margin: const EdgeInsets.only(bottom: 16),
+              margin: const EdgeInsets.only(bottom: 14),
               child: Stack(
                 children: [
                   // Shimmer effect for critical items
@@ -118,7 +118,7 @@ class _CyberProjectCardState extends ConsumerState<CyberProjectCard>
                       animation: _shimmerController,
                       builder: (context, child) {
                         return ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(18),
                           child: Container(
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
@@ -143,33 +143,34 @@ class _CyberProjectCardState extends ConsumerState<CyberProjectCard>
 
                   // Main card with glassmorphism
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(18),
                     child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                      filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
                       child: Container(
                         decoration: CyberTheme.glassDecoration.copyWith(
+                          borderRadius: BorderRadius.circular(18),
                           color: CyberTheme.glass.withOpacity(0.7),
                           border: Border.all(
-                            color: _priorityColor.withOpacity(0.3 * glowOpacity),
-                            width: 1.5,
+                            color: _priorityColor.withOpacity(0.25 * glowOpacity),
+                            width: 1.2,
                           ),
                           boxShadow: widget.project.priority == 'critical' &&
-                                  !widget.project.isArchived
+                              !widget.project.isArchived
                               ? [
-                                  BoxShadow(
-                                    color: _priorityColor
-                                        .withOpacity(0.2 * glowOpacity),
-                                    blurRadius: 16,
-                                    spreadRadius: 2,
-                                  ),
-                                ]
+                            BoxShadow(
+                              color: _priorityColor
+                                  .withOpacity(0.18 * glowOpacity),
+                              blurRadius: 14,
+                              spreadRadius: 1,
+                            ),
+                          ]
                               : [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.3),
-                                    blurRadius: 12,
-                                    offset: const Offset(0, 4),
-                                  ),
-                                ],
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.25),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
                         child: child,
                       ),
@@ -187,7 +188,7 @@ class _CyberProjectCardState extends ConsumerState<CyberProjectCard>
                 top: 0,
                 bottom: 0,
                 child: Container(
-                  width: 4,
+                  width: 3.5,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
@@ -198,8 +199,8 @@ class _CyberProjectCardState extends ConsumerState<CyberProjectCard>
                       ],
                     ),
                     borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      bottomLeft: Radius.circular(20),
+                      topLeft: Radius.circular(18),
+                      bottomLeft: Radius.circular(18),
                     ),
                   ),
                 ),
@@ -207,7 +208,7 @@ class _CyberProjectCardState extends ConsumerState<CyberProjectCard>
 
               // Content
               Padding(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(18),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -219,7 +220,7 @@ class _CyberProjectCardState extends ConsumerState<CyberProjectCard>
                           child: Row(
                             children: [
                               Container(
-                                padding: const EdgeInsets.all(8),
+                                padding: const EdgeInsets.all(7),
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                     colors: [
@@ -227,26 +228,26 @@ class _CyberProjectCardState extends ConsumerState<CyberProjectCard>
                                       _priorityColor.withOpacity(0.1),
                                     ],
                                   ),
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(9),
                                   border: Border.all(
                                     color: _priorityColor.withOpacity(0.3),
                                   ),
                                 ),
                                 child: Icon(
                                   _priorityIcon,
-                                  size: 16,
+                                  size: 15,
                                   color: _priorityColor,
                                 ),
                               ),
-                              const SizedBox(width: 12),
+                              const SizedBox(width: 11),
                               Expanded(
                                 child: Text(
                                   widget.project.name.toUpperCase(),
                                   style: GoogleFonts.inter(
-                                    fontSize: 17,
+                                    fontSize: 16,
                                     fontWeight: FontWeight.w800,
                                     color: Colors.white,
-                                    letterSpacing: 1.2,
+                                    letterSpacing: 1.0,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -259,14 +260,14 @@ class _CyberProjectCardState extends ConsumerState<CyberProjectCard>
                         if (widget.project.isArchived)
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
+                              horizontal: 8,
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(8),
+                              color: Colors.white.withOpacity(0.08),
+                              borderRadius: BorderRadius.circular(7),
                               border: Border.all(
-                                color: Colors.white.withOpacity(0.2),
+                                color: Colors.white.withOpacity(0.15),
                               ),
                             ),
                             child: Row(
@@ -274,7 +275,7 @@ class _CyberProjectCardState extends ConsumerState<CyberProjectCard>
                               children: [
                                 Icon(
                                   LucideIcons.archive,
-                                  size: 10,
+                                  size: 9,
                                   color: Colors.white54,
                                 ),
                                 const SizedBox(width: 4),
@@ -283,7 +284,7 @@ class _CyberProjectCardState extends ConsumerState<CyberProjectCard>
                                   style: GoogleFonts.inter(
                                     fontSize: 9,
                                     color: Colors.white54,
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.w700,
                                     letterSpacing: 0.5,
                                   ),
                                 ),
@@ -295,18 +296,18 @@ class _CyberProjectCardState extends ConsumerState<CyberProjectCard>
                             animation: _pulseAnimation,
                             builder: (context, child) {
                               return Container(
-                                width: 8,
-                                height: 8,
+                                width: 7,
+                                height: 7,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   color: _priorityColor,
                                   boxShadow: [
                                     BoxShadow(
                                       color: _priorityColor.withOpacity(
-                                        0.5 * _pulseAnimation.value,
+                                        0.45 * _pulseAnimation.value,
                                       ),
-                                      blurRadius: 8 * _pulseAnimation.value,
-                                      spreadRadius: 2 * _pulseAnimation.value,
+                                      blurRadius: 7 * _pulseAnimation.value,
+                                      spreadRadius: 1.5 * _pulseAnimation.value,
                                     ),
                                   ],
                                 ),
@@ -316,16 +317,16 @@ class _CyberProjectCardState extends ConsumerState<CyberProjectCard>
                       ],
                     ),
 
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 11),
 
                     // Description
                     if (widget.project.description != null)
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
+                        padding: const EdgeInsets.only(bottom: 14),
                         child: Text(
                           widget.project.description!,
                           style: GoogleFonts.inter(
-                            fontSize: 13.5,
+                            fontSize: 13,
                             color: Colors.white.withOpacity(0.65),
                             height: 1.5,
                             letterSpacing: 0.1,
@@ -363,34 +364,34 @@ class _CyberProjectCardState extends ConsumerState<CyberProjectCard>
                                   children: [
                                     Icon(
                                       LucideIcons.target,
-                                      size: 12,
+                                      size: 11,
                                       color: Colors.white.withOpacity(0.5),
                                     ),
                                     const SizedBox(width: 6),
                                     Text(
                                       "$done/$total OBJECTIVES",
                                       style: GoogleFonts.robotoMono(
-                                        fontSize: 11,
+                                        fontSize: 10.5,
                                         color: Colors.white.withOpacity(0.6),
                                         fontWeight: FontWeight.w600,
-                                        letterSpacing: 0.5,
+                                        letterSpacing: 0.4,
                                       ),
                                     ),
                                   ],
                                 ),
                                 Container(
                                   padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
+                                    horizontal: 7,
                                     vertical: 3,
                                   ),
                                   decoration: BoxDecoration(
                                     color: _priorityColor.withOpacity(0.15),
-                                    borderRadius: BorderRadius.circular(6),
+                                    borderRadius: BorderRadius.circular(5),
                                   ),
                                   child: Text(
                                     "${(percent * 100).toInt()}%",
                                     style: GoogleFonts.robotoMono(
-                                      fontSize: 11,
+                                      fontSize: 10.5,
                                       color: _priorityColor,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -398,22 +399,22 @@ class _CyberProjectCardState extends ConsumerState<CyberProjectCard>
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 9),
                             Stack(
                               children: [
                                 // Background
                                 Container(
-                                  height: 6,
+                                  height: 5,
                                   decoration: BoxDecoration(
                                     color: Colors.white.withOpacity(0.05),
-                                    borderRadius: BorderRadius.circular(3),
+                                    borderRadius: BorderRadius.circular(2.5),
                                   ),
                                 ),
                                 // Progress
                                 FractionallySizedBox(
                                   widthFactor: percent,
                                   child: Container(
-                                    height: 6,
+                                    height: 5,
                                     decoration: BoxDecoration(
                                       gradient: LinearGradient(
                                         colors: [
@@ -421,11 +422,11 @@ class _CyberProjectCardState extends ConsumerState<CyberProjectCard>
                                           _priorityColor.withOpacity(0.7),
                                         ],
                                       ),
-                                      borderRadius: BorderRadius.circular(3),
+                                      borderRadius: BorderRadius.circular(2.5),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: _priorityColor.withOpacity(0.4),
-                                          blurRadius: 6,
+                                          color: _priorityColor.withOpacity(0.35),
+                                          blurRadius: 5,
                                           offset: const Offset(0, 2),
                                         ),
                                       ],
@@ -438,42 +439,42 @@ class _CyberProjectCardState extends ConsumerState<CyberProjectCard>
                         );
                       },
                       loading: () => SizedBox(
-                        height: 6,
+                        height: 5,
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(3),
+                          borderRadius: BorderRadius.circular(2.5),
                           child: LinearProgressIndicator(
                             color: _priorityColor,
                             backgroundColor: Colors.white.withOpacity(0.05),
-                            minHeight: 6,
+                            minHeight: 5,
                           ),
                         ),
                       ),
                       error: (e, s) => const SizedBox.shrink(),
                     ),
 
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 14),
 
                     // Footer
                     Row(
                       children: [
                         Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 6,
+                            horizontal: 9,
+                            vertical: 5,
                           ),
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.05),
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(7),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(
                                 LucideIcons.calendar,
-                                size: 12,
+                                size: 11,
                                 color: Colors.white.withOpacity(0.5),
                               ),
-                              const SizedBox(width: 6),
+                              const SizedBox(width: 5),
                               Text(
                                 widget.project.endDate != null
                                     ? DateFormat('MMM dd').format(
@@ -481,7 +482,7 @@ class _CyberProjectCardState extends ConsumerState<CyberProjectCard>
                                 )
                                     : "No Deadline",
                                 style: GoogleFonts.inter(
-                                  fontSize: 11,
+                                  fontSize: 10.5,
                                   color: Colors.white.withOpacity(0.5),
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -489,15 +490,15 @@ class _CyberProjectCardState extends ConsumerState<CyberProjectCard>
                             ],
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 7),
                         Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 6,
+                            horizontal: 9,
+                            vertical: 5,
                           ),
                           decoration: BoxDecoration(
                             color: _priorityColor.withOpacity(0.15),
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(7),
                             border: Border.all(
                               color: _priorityColor.withOpacity(0.3),
                             ),
@@ -505,10 +506,10 @@ class _CyberProjectCardState extends ConsumerState<CyberProjectCard>
                           child: Text(
                             widget.project.priority.toUpperCase(),
                             style: GoogleFonts.inter(
-                              fontSize: 10,
+                              fontSize: 9.5,
                               color: _priorityColor,
                               fontWeight: FontWeight.bold,
-                              letterSpacing: 0.8,
+                              letterSpacing: 0.7,
                             ),
                           ),
                         ),
