@@ -92,15 +92,15 @@ class _TimelineProjectBarState extends State<TimelineProjectBar>
         onExit: (_) => setState(() => _isHovered = false),
         child: AnimatedScale(
           scale: _isPressed ? 0.98 : 1.0,
-          duration: const Duration(milliseconds: 150),
+          duration: const Duration(milliseconds: 120),
           child: Container(
             margin: EdgeInsets.only(
               left: startOffset < 0 ? 0 : startOffset,
-              top: 8,
-              bottom: 8,
+              top: 6,
+              bottom: 6,
             ),
             width: width,
-            height: 32,
+            height: 28,
             child: Stack(
               children: [
                 // Shimmer effect for critical/overdue
@@ -109,7 +109,7 @@ class _TimelineProjectBarState extends State<TimelineProjectBar>
                     animation: _shimmerController,
                     builder: (context, child) {
                       return ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(7),
                         child: Container(
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
@@ -142,9 +142,9 @@ class _TimelineProjectBarState extends State<TimelineProjectBar>
                         : 1.0;
 
                     return ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(7),
                       child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                        filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
                         child: Container(
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
@@ -160,27 +160,27 @@ class _TimelineProjectBarState extends State<TimelineProjectBar>
                                 color.withOpacity(0.5),
                               ],
                             ),
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(7),
                             border: Border.all(
                               color: _isOverdue
                                   ? CyberTheme.danger.withOpacity(
-                                0.5 + (glowOpacity * 0.3),
+                                0.45 + (glowOpacity * 0.25),
                               )
                                   : color.withOpacity(
-                                _isHovered ? 0.8 : 0.4,
+                                _isHovered ? 0.75 : 0.35,
                               ),
-                              width: _isOverdue ? 2 : 1.5,
+                              width: _isOverdue ? 1.5 : 1.2,
                             ),
                             boxShadow: [
                               if (_isOverdue || widget.project.priority == 'critical')
                                 BoxShadow(
-                                  color: color.withOpacity(0.3 * glowOpacity),
-                                  blurRadius: 12,
-                                  spreadRadius: 1,
+                                  color: color.withOpacity(0.25 * glowOpacity),
+                                  blurRadius: 10,
+                                  spreadRadius: 0.5,
                                 ),
                               BoxShadow(
-                                color: color.withOpacity(0.2),
-                                blurRadius: 8,
+                                color: color.withOpacity(0.18),
+                                blurRadius: 6,
                                 offset: const Offset(0, 2),
                               ),
                             ],
@@ -198,7 +198,7 @@ class _TimelineProjectBarState extends State<TimelineProjectBar>
                         top: 0,
                         bottom: 0,
                         child: Container(
-                          width: 3,
+                          width: 2.5,
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               begin: Alignment.topCenter,
@@ -209,8 +209,8 @@ class _TimelineProjectBarState extends State<TimelineProjectBar>
                               ],
                             ),
                             borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(8),
-                              bottomLeft: Radius.circular(8),
+                              topLeft: Radius.circular(7),
+                              bottomLeft: Radius.circular(7),
                             ),
                           ),
                         ),
@@ -219,36 +219,36 @@ class _TimelineProjectBarState extends State<TimelineProjectBar>
                       // Content
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
+                          horizontal: 10,
+                          vertical: 5,
                         ),
                         child: Row(
                           children: [
                             // Status indicator
                             if (_isOverdue)
                               Padding(
-                                padding: const EdgeInsets.only(right: 8),
+                                padding: const EdgeInsets.only(right: 6),
                                 child: Icon(
                                   LucideIcons.alertTriangle,
-                                  size: 14,
+                                  size: 12,
                                   color: CyberTheme.danger,
                                 ),
                               )
                             else if (_isUpcoming)
                               Padding(
-                                padding: const EdgeInsets.only(right: 8),
+                                padding: const EdgeInsets.only(right: 6),
                                 child: Icon(
                                   LucideIcons.clock,
-                                  size: 14,
+                                  size: 12,
                                   color: Colors.white.withOpacity(0.6),
                                 ),
                               )
                             else if (widget.project.priority == 'critical')
                                 Padding(
-                                  padding: const EdgeInsets.only(right: 8),
+                                  padding: const EdgeInsets.only(right: 6),
                                   child: Icon(
                                     LucideIcons.flame,
-                                    size: 14,
+                                    size: 12,
                                     color: color,
                                   ),
                                 ),
@@ -258,12 +258,12 @@ class _TimelineProjectBarState extends State<TimelineProjectBar>
                               child: Text(
                                 widget.project.name,
                                 style: GoogleFonts.inter(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w700,
                                   color: _isUpcoming
                                       ? Colors.white.withOpacity(0.6)
                                       : Colors.white,
-                                  letterSpacing: 0.3,
+                                  letterSpacing: 0.2,
                                 ),
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
@@ -273,22 +273,22 @@ class _TimelineProjectBarState extends State<TimelineProjectBar>
                             // Archive badge
                             if (widget.project.isArchived)
                               Container(
-                                margin: const EdgeInsets.only(left: 6),
+                                margin: const EdgeInsets.only(left: 5),
                                 padding: const EdgeInsets.symmetric(
-                                  horizontal: 6,
+                                  horizontal: 5,
                                   vertical: 2,
                                 ),
                                 decoration: BoxDecoration(
                                   color: Colors.white.withOpacity(0.15),
-                                  borderRadius: BorderRadius.circular(4),
+                                  borderRadius: BorderRadius.circular(3),
                                 ),
                                 child: Text(
                                   'ARCHIVED',
                                   style: GoogleFonts.inter(
-                                    fontSize: 8,
-                                    fontWeight: FontWeight.bold,
+                                    fontSize: 7,
+                                    fontWeight: FontWeight.w700,
                                     color: Colors.white.withOpacity(0.5),
-                                    letterSpacing: 0.5,
+                                    letterSpacing: 0.4,
                                   ),
                                 ),
                               ),

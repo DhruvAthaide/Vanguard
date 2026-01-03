@@ -19,7 +19,7 @@ class _TimelineLegendState extends State<TimelineLegend>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 700),
     )..forward();
   }
 
@@ -44,11 +44,11 @@ class _TimelineLegendState extends State<TimelineLegend>
       child: FadeTransition(
         opacity: _controller,
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(16),
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+            filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
@@ -56,16 +56,16 @@ class _TimelineLegendState extends State<TimelineLegend>
                     Colors.white.withOpacity(0.08),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: Colors.white.withOpacity(0.15),
-                  width: 1.5,
+                  width: 1.2,
                 ),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.3),
-                    blurRadius: 20,
-                    offset: const Offset(0, 8),
+                    blurRadius: 16,
+                    offset: const Offset(0, 6),
                   ),
                 ],
               ),
@@ -94,7 +94,7 @@ class _TimelineLegendState extends State<TimelineLegend>
                   _Divider(),
                   Container(
                     width: 2,
-                    height: 16,
+                    height: 14,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
@@ -113,11 +113,11 @@ class _TimelineLegendState extends State<TimelineLegend>
                       ],
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 7),
                   Text(
                     "Today",
                     style: GoogleFonts.inter(
-                      fontSize: 12,
+                      fontSize: 11,
                       color: Colors.white.withOpacity(0.85),
                       fontWeight: FontWeight.w600,
                     ),
@@ -173,27 +173,27 @@ class _LegendItemState extends State<_LegendItem>
           animation: _pulseController,
           builder: (context, child) {
             return Container(
-              width: 10,
-              height: 10,
+              width: 8,
+              height: 8,
               decoration: BoxDecoration(
                 color: widget.color,
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: widget.color.withOpacity(0.4 * _pulseController.value),
-                    blurRadius: 6 * _pulseController.value,
-                    spreadRadius: 2 * _pulseController.value,
+                    color: widget.color.withOpacity(0.35 * _pulseController.value),
+                    blurRadius: 5 * _pulseController.value,
+                    spreadRadius: 1.5 * _pulseController.value,
                   ),
                 ],
               ),
             );
           },
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: 7),
         Text(
           widget.label,
           style: GoogleFonts.inter(
-            fontSize: 12,
+            fontSize: 11,
             color: Colors.white.withOpacity(0.85),
             fontWeight: FontWeight.w600,
           ),
@@ -208,8 +208,8 @@ class _Divider extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 1,
-      height: 16,
-      margin: const EdgeInsets.symmetric(horizontal: 12),
+      height: 14,
+      margin: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,

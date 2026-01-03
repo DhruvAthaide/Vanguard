@@ -20,7 +20,7 @@ class TimelineScreen extends ConsumerStatefulWidget {
 class _TimelineScreenState extends ConsumerState<TimelineScreen>
     with TickerProviderStateMixin {
   double _pxPerDay = 24.0;
-  final double _headerWidth = 130.0;
+  final double _headerWidth = 140.0;
 
   late AnimationController _headerController;
   late AnimationController _glowController;
@@ -33,7 +33,7 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen>
 
     _headerController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
+      duration: const Duration(milliseconds: 800),
     );
 
     _glowController = AnimationController(
@@ -57,7 +57,7 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen>
     ).animate(
       CurvedAnimation(
         parent: _headerController,
-        curve: const Interval(0.0, 0.7, curve: Curves.easeOutCubic),
+        curve: const Interval(0.0, 0.6, curve: Curves.easeOutCubic),
       ),
     );
 
@@ -113,12 +113,12 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen>
                   child: FadeTransition(
                     opacity: _headerFadeAnimation,
                     child: Container(
-                      padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+                      padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
                       child: Row(
                         children: [
                           // Back Button
                           ClipRRect(
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(14),
                             child: BackdropFilter(
                               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                               child: Container(
@@ -129,7 +129,7 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen>
                                       Colors.white.withOpacity(0.04),
                                     ],
                                   ),
-                                  borderRadius: BorderRadius.circular(16),
+                                  borderRadius: BorderRadius.circular(14),
                                   border: Border.all(
                                     color: Colors.white.withOpacity(0.1),
                                   ),
@@ -141,8 +141,8 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen>
                               ),
                             ),
                           ),
-                          const SizedBox(width: 16),
-                          
+                          const SizedBox(width: 14),
+
                           // Title Section
                           Expanded(
                             child: Column(
@@ -151,20 +151,20 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen>
                                 Text(
                                   "MISSION TIMELINE",
                                   style: GoogleFonts.inter(
-                                    fontSize: 12,
+                                    fontSize: 11,
                                     fontWeight: FontWeight.w700,
                                     color: CyberTheme.accent,
-                                    letterSpacing: 2.5,
+                                    letterSpacing: 2.2,
                                   ),
                                 ),
-                                const SizedBox(height: 4),
+                                const SizedBox(height: 3),
                                 Text(
                                   "Operation Schedule",
                                   style: GoogleFonts.inter(
-                                    fontSize: 24,
+                                    fontSize: 22,
                                     fontWeight: FontWeight.w800,
                                     color: Colors.white,
-                                    letterSpacing: -1.0,
+                                    letterSpacing: -0.6,
                                     height: 1.0,
                                   ),
                                 ),
@@ -174,7 +174,7 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen>
 
                           // Zoom Controls
                           ClipRRect(
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(14),
                             child: BackdropFilter(
                               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                               child: Container(
@@ -185,7 +185,7 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen>
                                       Colors.white.withOpacity(0.04),
                                     ],
                                   ),
-                                  borderRadius: BorderRadius.circular(16),
+                                  borderRadius: BorderRadius.circular(14),
                                   border: Border.all(
                                     color: Colors.white.withOpacity(0.1),
                                   ),
@@ -203,7 +203,7 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen>
                                     ),
                                     Container(
                                       width: 1,
-                                      height: 24,
+                                      height: 20,
                                       color: Colors.white.withOpacity(0.1),
                                     ),
                                     _ZoomButton(
@@ -237,7 +237,7 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen>
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Container(
-                                  padding: const EdgeInsets.all(32),
+                                  padding: const EdgeInsets.all(28),
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     gradient: LinearGradient(
@@ -252,24 +252,24 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen>
                                   ),
                                   child: Icon(
                                     LucideIcons.calendar,
-                                    size: 56,
+                                    size: 48,
                                     color: Colors.white.withOpacity(0.2),
                                   ),
                                 ),
-                                const SizedBox(height: 24),
+                                const SizedBox(height: 20),
                                 Text(
                                   "No Operations Scheduled",
                                   style: GoogleFonts.inter(
-                                    fontSize: 18,
+                                    fontSize: 17,
                                     fontWeight: FontWeight.w600,
                                     color: Colors.white.withOpacity(0.6),
                                   ),
                                 ),
-                                const SizedBox(height: 8),
+                                const SizedBox(height: 6),
                                 Text(
                                   "Create operations to track their timeline",
                                   style: GoogleFonts.inter(
-                                    fontSize: 14,
+                                    fontSize: 13,
                                     color: Colors.white.withOpacity(0.4),
                                   ),
                                 ),
@@ -314,7 +314,7 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen>
 
                             // Floating Legend
                             const Positioned(
-                              bottom: 24,
+                              bottom: 20,
                               left: 0,
                               right: 0,
                               child: Center(child: TimelineLegend()),
@@ -328,8 +328,8 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen>
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SizedBox(
-                            width: 50,
-                            height: 50,
+                            width: 45,
+                            height: 45,
                             child: CircularProgressIndicator(
                               strokeWidth: 3,
                               valueColor: AlwaysStoppedAnimation<Color>(
@@ -337,12 +337,13 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen>
                               ),
                             ),
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 18),
                           Text(
                             "Loading timeline...",
                             style: GoogleFonts.inter(
                               color: Colors.white.withOpacity(0.6),
                               fontWeight: FontWeight.w500,
+                              fontSize: 14,
                             ),
                           ),
                         ],
@@ -354,13 +355,16 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen>
                         children: [
                           Icon(
                             LucideIcons.alertCircle,
-                            size: 48,
+                            size: 44,
                             color: CyberTheme.danger,
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 14),
                           Text(
                             "Error: $e",
-                            style: GoogleFonts.inter(color: CyberTheme.danger),
+                            style: GoogleFonts.inter(
+                              color: CyberTheme.danger,
+                              fontSize: 14,
+                            ),
                           ),
                         ],
                       ),
@@ -405,11 +409,11 @@ class _ZoomButtonState extends State<_ZoomButton> {
         scale: _isPressed ? 0.9 : 1.0,
         duration: const Duration(milliseconds: 100),
         child: Container(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(10),
           child: Icon(
             widget.icon,
             color: Colors.white70,
-            size: 18,
+            size: 16,
           ),
         ),
       ),
@@ -462,7 +466,7 @@ class _LinkedScrollBodyState extends State<_LinkedScrollBody> {
           // Pinned Left Column (Project Names)
           ClipRRect(
             borderRadius: const BorderRadius.only(
-              topRight: Radius.circular(16),
+              topRight: Radius.circular(14),
             ),
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
@@ -478,7 +482,7 @@ class _LinkedScrollBodyState extends State<_LinkedScrollBody> {
                   border: Border(
                     right: BorderSide(
                       color: Colors.white.withOpacity(0.1),
-                      width: 1.5,
+                      width: 1.2,
                     ),
                   ),
                 ),
@@ -486,9 +490,9 @@ class _LinkedScrollBodyState extends State<_LinkedScrollBody> {
                   children: [
                     // Header space
                     Container(
-                      height: 50,
+                      height: 44,
                       alignment: Alignment.center,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
                       decoration: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
@@ -499,10 +503,10 @@ class _LinkedScrollBodyState extends State<_LinkedScrollBody> {
                       child: Text(
                         "OPERATIONS",
                         style: GoogleFonts.inter(
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
                           color: CyberTheme.accent,
-                          letterSpacing: 1.5,
+                          letterSpacing: 1.4,
                         ),
                       ),
                     ),
@@ -514,21 +518,21 @@ class _LinkedScrollBodyState extends State<_LinkedScrollBody> {
 
                       return TweenAnimationBuilder<double>(
                         tween: Tween(begin: 0.0, end: 1.0),
-                        duration: Duration(milliseconds: 300 + (index * 50)),
+                        duration: Duration(milliseconds: 250 + (index * 40)),
                         curve: Curves.easeOutCubic,
                         builder: (context, value, child) {
                           return Opacity(
                             opacity: value,
                             child: Transform.translate(
-                              offset: Offset(-20 * (1 - value), 0),
+                              offset: Offset(-15 * (1 - value), 0),
                               child: child,
                             ),
                           );
                         },
                         child: Container(
-                          height: 48,
+                          height: 40,
                           alignment: Alignment.centerLeft,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          padding: const EdgeInsets.symmetric(horizontal: 14),
                           decoration: BoxDecoration(
                             border: Border(
                               bottom: BorderSide(
@@ -539,19 +543,19 @@ class _LinkedScrollBodyState extends State<_LinkedScrollBody> {
                           child: Row(
                             children: [
                               Container(
-                                width: 4,
-                                height: 4,
+                                width: 3.5,
+                                height: 3.5,
                                 decoration: BoxDecoration(
                                   color: _getPriorityColor(project.priority),
                                   shape: BoxShape.circle,
                                 ),
                               ),
-                              const SizedBox(width: 12),
+                              const SizedBox(width: 10),
                               Expanded(
                                 child: Text(
                                   project.name,
                                   style: GoogleFonts.inter(
-                                    fontSize: 13,
+                                    fontSize: 12,
                                     color: Colors.white.withOpacity(0.85),
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -621,19 +625,19 @@ class _LinkedScrollBodyState extends State<_LinkedScrollBody> {
 
                           return TweenAnimationBuilder<double>(
                             tween: Tween(begin: 0.0, end: 1.0),
-                            duration: Duration(milliseconds: 400 + (index * 50)),
+                            duration: Duration(milliseconds: 350 + (index * 40)),
                             curve: Curves.easeOutCubic,
                             builder: (context, value, child) {
                               return Opacity(
                                 opacity: value,
                                 child: Transform.translate(
-                                  offset: Offset(30 * (1 - value), 0),
+                                  offset: Offset(25 * (1 - value), 0),
                                   child: child,
                                 ),
                               );
                             },
                             child: Container(
-                              height: 48,
+                              height: 40,
                               decoration: BoxDecoration(
                                 border: Border(
                                   bottom: BorderSide(

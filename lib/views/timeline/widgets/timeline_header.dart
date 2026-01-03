@@ -41,7 +41,7 @@ class TimelineHeader extends StatelessWidget {
             top: 0,
             child: Container(
               width: pxPerDay,
-              height: 50,
+              height: 44,
               decoration: BoxDecoration(
                 border: Border(
                   left: BorderSide(
@@ -57,16 +57,17 @@ class TimelineHeader extends StatelessWidget {
                   Text(
                     dayName.toUpperCase(),
                     style: GoogleFonts.robotoMono(
-                      fontSize: 10,
+                      fontSize: 9,
                       color: isToday ? CyberTheme.accent : Colors.white54,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     dateStr,
                     style: GoogleFonts.inter(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
                       color: isToday ? Colors.white : Colors.white70,
                     ),
                   ),
@@ -91,7 +92,7 @@ class TimelineHeader extends StatelessWidget {
             top: 0,
             child: Container(
               width: pxPerDay * 7,
-              height: 50,
+              height: 44,
               decoration: BoxDecoration(
                 border: Border(
                   left: BorderSide(
@@ -100,7 +101,7 @@ class TimelineHeader extends StatelessWidget {
                   ),
                 ),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -108,17 +109,17 @@ class TimelineHeader extends StatelessWidget {
                   Text(
                     'WEEK $weekOfYear',
                     style: GoogleFonts.robotoMono(
-                      fontSize: 9,
+                      fontSize: 8.5,
                       color: CyberTheme.accent.withOpacity(0.6),
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.5,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.4,
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     dateStr,
                     style: GoogleFonts.inter(
-                      fontSize: 11,
+                      fontSize: 10,
                       color: Colors.white.withOpacity(0.7),
                       fontWeight: FontWeight.w600,
                     ),
@@ -136,12 +137,12 @@ class TimelineHeader extends StatelessWidget {
 
     return ClipRRect(
       borderRadius: const BorderRadius.only(
-        topRight: Radius.circular(16),
+        topRight: Radius.circular(14),
       ),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
-          height: 50,
+          height: 44,
           width: totalWidth < currentX ? currentX : totalWidth,
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -153,7 +154,7 @@ class TimelineHeader extends StatelessWidget {
             border: Border(
               bottom: BorderSide(
                 color: Colors.white.withOpacity(0.1),
-                width: 1.5,
+                width: 1.2,
               ),
             ),
           ),
