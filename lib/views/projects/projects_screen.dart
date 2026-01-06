@@ -140,7 +140,7 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen>
                                             ).createShader(bounds);
                                           },
                                           child: Text(
-                                            "COMMAND CENTER",
+                                            "VANGUARD",
                                             style: GoogleFonts.inter(
                                               fontSize: 11,
                                               fontWeight: FontWeight.w700,

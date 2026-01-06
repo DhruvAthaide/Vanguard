@@ -137,7 +137,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                                     ).createShader(bounds);
                                   },
                                   child: Text(
-                                    "COMMAND CENTER",
+                                    "VANGUARD",
                                     style: GoogleFonts.inter(
                                       fontSize: 11,
                                       fontWeight: FontWeight.w700,
