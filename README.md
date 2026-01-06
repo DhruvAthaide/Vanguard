@@ -94,6 +94,8 @@ Vanguard uses a modern, scalable Flutter architecture optimized for performance 
 - [ ] SSH/Terminal Integration ("Hacker Mode")
 - [ ] Export Encrypted Mission Reports (PDF/JSON)
 - [ ] Peer-to-Peer Encrypted Sync (Mesh Network)
+- [ ] On-Device Intel Synthesis (Local LLM)
+- [ ] Encrypted "Dead Drop" Sharing (QR/Steganography)
 
 ---
 
