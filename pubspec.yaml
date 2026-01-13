@@ -44,7 +44,19 @@ dependencies:
   webfeed_revised: ^0.7.0
   webview_flutter: ^4.7.0
   flutter_map: ^8.2.2
+
   latlong2: ^0.9.1
+
+  # Phase 3: Advanced Ops
+  pdf: ^3.10.0
+  printing: ^5.11.0
+  archive: ^3.3.0
+  encrypt: ^5.0.3
+  qr_flutter: ^4.1.0
+  mobile_scanner: ^5.1.0
+  image: ^4.1.0
+  file_picker: ^8.0.0
+  image_picker: ^1.0.7
 
 dev_dependencies:
   flutter_test:
