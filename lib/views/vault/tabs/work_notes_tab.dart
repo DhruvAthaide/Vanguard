@@ -137,9 +137,9 @@ class WorkNotesTab extends ConsumerWidget {
                   ),
                   child: const Icon(LucideIcons.trash2, color: Colors.white, size: 20),
                 ),
-                child: GestureDetector(
+                child: _WorkNoteCard(
+                  note: note,
                   onTap: () => _showEditor(context, ref, note: note),
-                  child: _WorkNoteCard(note: note),
                 ),
               );
             },
@@ -179,8 +179,9 @@ class WorkNotesTab extends ConsumerWidget {
 
 class _WorkNoteCard extends StatefulWidget {
   final WorkNote note;
+  final VoidCallback onTap;
 
-  const _WorkNoteCard({required this.note});
+  const _WorkNoteCard({required this.note, required this.onTap});
 
   @override
   State<_WorkNoteCard> createState() => _WorkNoteCardState();
@@ -192,6 +193,7 @@ class _WorkNoteCardState extends State<_WorkNoteCard> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: widget.onTap,
       onTapDown: (_) => setState(() => _isPressed = true),
       onTapUp: (_) => setState(() => _isPressed = false),
       onTapCancel: () => setState(() => _isPressed = false),
