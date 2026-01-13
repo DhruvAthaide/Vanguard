@@ -90,11 +90,12 @@ Vanguard uses a modern, scalable Flutter architecture optimized for performance 
 - [x] Global Threat Map (Geo-Tagging)
 - [x] Performance Optimization (60fps)
 
-### Phase 3: Advanced Ops (Coming Soon) 🚧
-- [ ] Export Encrypted Mission Reports (PDF/JSON)
-- [ ] Peer-to-Peer Encrypted Sync (Mesh Network)
-- [ ] On-Device Intel Synthesis (Local LLM)
-- [ ] Encrypted "Dead Drop" Sharing (QR/Steganography)
+### Phase 3: Advanced Ops ✅
+- [x] Export Encrypted Mission Reports (PDF)
+- [x] Encrypted "Dead Drop" Sharing (QR/Steganography)
+- [x] Rich Notes (Images & Attachments)
+- [ ] Peer-to-Peer Encrypted Sync (Mesh Network) (Deferred)
+- [ ] On-Device Intel Synthesis (Local LLM) (Deferred)
 
 ---
 
