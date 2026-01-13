@@ -8,6 +8,7 @@ import '../../core/theme/cyber_theme.dart';
 import 'tabs/work_notes_tab.dart';
 import 'tabs/locked_vault_tab.dart';
 import 'widgets/biometric_gate.dart';
+import '../../features/deaddrop/ui/dead_drop_scanner_screen.dart';
 
 class VaultScreen extends ConsumerStatefulWidget {
   const VaultScreen({super.key});
@@ -141,8 +142,30 @@ class _VaultScreenState extends ConsumerState<VaultScreen> with SingleTickerProv
                               color: Colors.white,
                             ),
                           ),
-                        ],
-                      ),
+
+                          const Spacer(),
+                          // Dead Drop Scanner Button
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const DeadDropScannerScreen(),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: Colors.white.withOpacity(0.1)),
+                              ),
+                              child: const Icon(LucideIcons.scanLine, color: Colors.white, size: 20),
+                            ),
+                          ),
+                          ],
+                        ),
                       const SizedBox(height: 20),
                       Container(
                         height: 44,
