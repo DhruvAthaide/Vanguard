@@ -8,6 +8,9 @@ class CyberTheme {
   static const Color accent = Color(0xFF38BDF8);
   static const Color danger = Color(0xFFEF4444);
   static const Color success = Color(0xFF22C55E);
+  
+  static TextStyle get headingMedium => GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white);
+  static TextStyle get headingSmall => GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white);
 
   /// Standard Glassmorphic Decoration
   static BoxDecoration get glassDecoration => BoxDecoration(
