@@ -72,6 +72,15 @@ class WorkNotes extends Table {
   BoolColumn get isArchived => boolean().withDefault(const Constant(false))();
 }
 
+class NoteAttachments extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get noteId => integer().references(WorkNotes, #id, onDelete: KeyAction.cascade)();
+  TextColumn get filePath => text()(); // Absolute local path
+  TextColumn get originalName => text()();
+  TextColumn get fileType => text()(); // e.g. "image/png"
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+}
+
 class Tags extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get label => text().unique()();
