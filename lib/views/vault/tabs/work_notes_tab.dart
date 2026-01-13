@@ -11,6 +11,7 @@ import '../../../database/app_database.dart';
 import '../../../providers/project_provider.dart';
 import 'package:drift/drift.dart' as drift;
 import '../widgets/rich_note_editor.dart';
+import 'package:vanguard/features/deaddrop/ui/share_qr_dialog.dart';
 
 class WorkNotesTab extends ConsumerWidget {
   const WorkNotesTab({super.key});
@@ -376,6 +377,43 @@ class _WorkNoteEditorState extends ConsumerState<_WorkNoteEditor> {
                       fontWeight: FontWeight.w700,
                       color: CyberTheme.accent,
                       letterSpacing: 1.4,
+                    ),
+                  ),
+                  // Share Button
+                  GestureDetector(
+                    onTap: () {
+                      if (_contentCtrl.text.isEmpty) return;
+                      showDialog(
+                        context: context,
+                        builder: (_) => ShareQrDialog(
+                          title: _titleCtrl.text.isEmpty ? 'Untitled Note' : _titleCtrl.text,
+                          dataToShare: _contentCtrl.text,
+                        ),
+                      );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.05),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.white.withOpacity(0.1)),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(LucideIcons.qrCode, size: 13, color: CyberTheme.accent),
+                          const SizedBox(width: 5),
+                          Text(
+                            "DROP",
+                            style: GoogleFonts.inter(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                              color: CyberTheme.accent,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   // Preview Toggle

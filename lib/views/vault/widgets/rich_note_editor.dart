@@ -1,7 +1,11 @@
 import 'dart:ui';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
 import '../../../core/theme/cyber_theme.dart';
 
 // Custom TextEditingController to handle syntax highlighting
@@ -170,6 +174,26 @@ class _RichNoteEditorState extends State<RichNoteEditor> {
     _focusNode.requestFocus();
   }
 
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    
+    if (image != null) {
+      // 1. Save to App Storage
+      final appDir = await getApplicationDocumentsDirectory();
+      final attachmentsDir = Directory('${appDir.path}/attachments');
+      if (!await attachmentsDir.exists()) {
+        await attachmentsDir.create(recursive: true);
+      }
+      
+      final fileName = p.basename(image.path);
+      final savedImage = await File(image.path).copy('${attachmentsDir.path}/$fileName');
+      
+      // 2. Insert Markdown
+      _insertAtCursor('\n![Image](${savedImage.path})\n');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -237,6 +261,11 @@ class _RichNoteEditorState extends State<RichNoteEditor> {
                     icon: LucideIcons.quote,
                     tooltip: 'Quote',
                     onPressed: () => _insertAtCursor('> '),
+                  ),
+                  _FormatButton(
+                    icon: LucideIcons.image,
+                    tooltip: 'Add Image',
+                    onPressed: _pickImage,
                   ),
                 ],
               ),
