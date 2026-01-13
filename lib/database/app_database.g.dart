@@ -2706,6 +2706,410 @@ class WorkNotesCompanion extends UpdateCompanion<WorkNote> {
   }
 }
 
+class $NoteAttachmentsTable extends NoteAttachments
+    with TableInfo<$NoteAttachmentsTable, NoteAttachment> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $NoteAttachmentsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _noteIdMeta = const VerificationMeta('noteId');
+  @override
+  late final GeneratedColumn<int> noteId = GeneratedColumn<int>(
+    'note_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES work_notes (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _filePathMeta = const VerificationMeta(
+    'filePath',
+  );
+  @override
+  late final GeneratedColumn<String> filePath = GeneratedColumn<String>(
+    'file_path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _originalNameMeta = const VerificationMeta(
+    'originalName',
+  );
+  @override
+  late final GeneratedColumn<String> originalName = GeneratedColumn<String>(
+    'original_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fileTypeMeta = const VerificationMeta(
+    'fileType',
+  );
+  @override
+  late final GeneratedColumn<String> fileType = GeneratedColumn<String>(
+    'file_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    noteId,
+    filePath,
+    originalName,
+    fileType,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'note_attachments';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<NoteAttachment> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('note_id')) {
+      context.handle(
+        _noteIdMeta,
+        noteId.isAcceptableOrUnknown(data['note_id']!, _noteIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_noteIdMeta);
+    }
+    if (data.containsKey('file_path')) {
+      context.handle(
+        _filePathMeta,
+        filePath.isAcceptableOrUnknown(data['file_path']!, _filePathMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_filePathMeta);
+    }
+    if (data.containsKey('original_name')) {
+      context.handle(
+        _originalNameMeta,
+        originalName.isAcceptableOrUnknown(
+          data['original_name']!,
+          _originalNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_originalNameMeta);
+    }
+    if (data.containsKey('file_type')) {
+      context.handle(
+        _fileTypeMeta,
+        fileType.isAcceptableOrUnknown(data['file_type']!, _fileTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_fileTypeMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  NoteAttachment map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return NoteAttachment(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      noteId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}note_id'],
+      )!,
+      filePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}file_path'],
+      )!,
+      originalName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}original_name'],
+      )!,
+      fileType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}file_type'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $NoteAttachmentsTable createAlias(String alias) {
+    return $NoteAttachmentsTable(attachedDatabase, alias);
+  }
+}
+
+class NoteAttachment extends DataClass implements Insertable<NoteAttachment> {
+  final int id;
+  final int noteId;
+  final String filePath;
+  final String originalName;
+  final String fileType;
+  final DateTime createdAt;
+  const NoteAttachment({
+    required this.id,
+    required this.noteId,
+    required this.filePath,
+    required this.originalName,
+    required this.fileType,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['note_id'] = Variable<int>(noteId);
+    map['file_path'] = Variable<String>(filePath);
+    map['original_name'] = Variable<String>(originalName);
+    map['file_type'] = Variable<String>(fileType);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  NoteAttachmentsCompanion toCompanion(bool nullToAbsent) {
+    return NoteAttachmentsCompanion(
+      id: Value(id),
+      noteId: Value(noteId),
+      filePath: Value(filePath),
+      originalName: Value(originalName),
+      fileType: Value(fileType),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory NoteAttachment.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return NoteAttachment(
+      id: serializer.fromJson<int>(json['id']),
+      noteId: serializer.fromJson<int>(json['noteId']),
+      filePath: serializer.fromJson<String>(json['filePath']),
+      originalName: serializer.fromJson<String>(json['originalName']),
+      fileType: serializer.fromJson<String>(json['fileType']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'noteId': serializer.toJson<int>(noteId),
+      'filePath': serializer.toJson<String>(filePath),
+      'originalName': serializer.toJson<String>(originalName),
+      'fileType': serializer.toJson<String>(fileType),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  NoteAttachment copyWith({
+    int? id,
+    int? noteId,
+    String? filePath,
+    String? originalName,
+    String? fileType,
+    DateTime? createdAt,
+  }) => NoteAttachment(
+    id: id ?? this.id,
+    noteId: noteId ?? this.noteId,
+    filePath: filePath ?? this.filePath,
+    originalName: originalName ?? this.originalName,
+    fileType: fileType ?? this.fileType,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  NoteAttachment copyWithCompanion(NoteAttachmentsCompanion data) {
+    return NoteAttachment(
+      id: data.id.present ? data.id.value : this.id,
+      noteId: data.noteId.present ? data.noteId.value : this.noteId,
+      filePath: data.filePath.present ? data.filePath.value : this.filePath,
+      originalName: data.originalName.present
+          ? data.originalName.value
+          : this.originalName,
+      fileType: data.fileType.present ? data.fileType.value : this.fileType,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NoteAttachment(')
+          ..write('id: $id, ')
+          ..write('noteId: $noteId, ')
+          ..write('filePath: $filePath, ')
+          ..write('originalName: $originalName, ')
+          ..write('fileType: $fileType, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, noteId, filePath, originalName, fileType, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is NoteAttachment &&
+          other.id == this.id &&
+          other.noteId == this.noteId &&
+          other.filePath == this.filePath &&
+          other.originalName == this.originalName &&
+          other.fileType == this.fileType &&
+          other.createdAt == this.createdAt);
+}
+
+class NoteAttachmentsCompanion extends UpdateCompanion<NoteAttachment> {
+  final Value<int> id;
+  final Value<int> noteId;
+  final Value<String> filePath;
+  final Value<String> originalName;
+  final Value<String> fileType;
+  final Value<DateTime> createdAt;
+  const NoteAttachmentsCompanion({
+    this.id = const Value.absent(),
+    this.noteId = const Value.absent(),
+    this.filePath = const Value.absent(),
+    this.originalName = const Value.absent(),
+    this.fileType = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  NoteAttachmentsCompanion.insert({
+    this.id = const Value.absent(),
+    required int noteId,
+    required String filePath,
+    required String originalName,
+    required String fileType,
+    this.createdAt = const Value.absent(),
+  }) : noteId = Value(noteId),
+       filePath = Value(filePath),
+       originalName = Value(originalName),
+       fileType = Value(fileType);
+  static Insertable<NoteAttachment> custom({
+    Expression<int>? id,
+    Expression<int>? noteId,
+    Expression<String>? filePath,
+    Expression<String>? originalName,
+    Expression<String>? fileType,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (noteId != null) 'note_id': noteId,
+      if (filePath != null) 'file_path': filePath,
+      if (originalName != null) 'original_name': originalName,
+      if (fileType != null) 'file_type': fileType,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  NoteAttachmentsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? noteId,
+    Value<String>? filePath,
+    Value<String>? originalName,
+    Value<String>? fileType,
+    Value<DateTime>? createdAt,
+  }) {
+    return NoteAttachmentsCompanion(
+      id: id ?? this.id,
+      noteId: noteId ?? this.noteId,
+      filePath: filePath ?? this.filePath,
+      originalName: originalName ?? this.originalName,
+      fileType: fileType ?? this.fileType,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (noteId.present) {
+      map['note_id'] = Variable<int>(noteId.value);
+    }
+    if (filePath.present) {
+      map['file_path'] = Variable<String>(filePath.value);
+    }
+    if (originalName.present) {
+      map['original_name'] = Variable<String>(originalName.value);
+    }
+    if (fileType.present) {
+      map['file_type'] = Variable<String>(fileType.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NoteAttachmentsCompanion(')
+          ..write('id: $id, ')
+          ..write('noteId: $noteId, ')
+          ..write('filePath: $filePath, ')
+          ..write('originalName: $originalName, ')
+          ..write('fileType: $fileType, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -2716,6 +3120,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ProjectTagsTable projectTags = $ProjectTagsTable(this);
   late final $TaskTagsTable taskTags = $TaskTagsTable(this);
   late final $WorkNotesTable workNotes = $WorkNotesTable(this);
+  late final $NoteAttachmentsTable noteAttachments = $NoteAttachmentsTable(
+    this,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2728,6 +3135,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     projectTags,
     taskTags,
     workNotes,
+    noteAttachments,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -2772,6 +3180,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('task_tags', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'work_notes',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('note_attachments', kind: UpdateKind.delete)],
     ),
   ]);
 }
@@ -5297,6 +5712,31 @@ typedef $$WorkNotesTableUpdateCompanionBuilder =
       Value<bool> isArchived,
     });
 
+final class $$WorkNotesTableReferences
+    extends BaseReferences<_$AppDatabase, $WorkNotesTable, WorkNote> {
+  $$WorkNotesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$NoteAttachmentsTable, List<NoteAttachment>>
+  _noteAttachmentsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.noteAttachments,
+    aliasName: $_aliasNameGenerator(db.workNotes.id, db.noteAttachments.noteId),
+  );
+
+  $$NoteAttachmentsTableProcessedTableManager get noteAttachmentsRefs {
+    final manager = $$NoteAttachmentsTableTableManager(
+      $_db,
+      $_db.noteAttachments,
+    ).filter((f) => f.noteId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _noteAttachmentsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
 class $$WorkNotesTableFilterComposer
     extends Composer<_$AppDatabase, $WorkNotesTable> {
   $$WorkNotesTableFilterComposer({
@@ -5340,6 +5780,31 @@ class $$WorkNotesTableFilterComposer
     column: $table.isArchived,
     builder: (column) => ColumnFilters(column),
   );
+
+  Expression<bool> noteAttachmentsRefs(
+    Expression<bool> Function($$NoteAttachmentsTableFilterComposer f) f,
+  ) {
+    final $$NoteAttachmentsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.noteAttachments,
+      getReferencedColumn: (t) => t.noteId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$NoteAttachmentsTableFilterComposer(
+            $db: $db,
+            $table: $db.noteAttachments,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$WorkNotesTableOrderingComposer
@@ -5418,6 +5883,31 @@ class $$WorkNotesTableAnnotationComposer
     column: $table.isArchived,
     builder: (column) => column,
   );
+
+  Expression<T> noteAttachmentsRefs<T extends Object>(
+    Expression<T> Function($$NoteAttachmentsTableAnnotationComposer a) f,
+  ) {
+    final $$NoteAttachmentsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.noteAttachments,
+      getReferencedColumn: (t) => t.noteId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$NoteAttachmentsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.noteAttachments,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$WorkNotesTableTableManager
@@ -5431,9 +5921,9 @@ class $$WorkNotesTableTableManager
           $$WorkNotesTableAnnotationComposer,
           $$WorkNotesTableCreateCompanionBuilder,
           $$WorkNotesTableUpdateCompanionBuilder,
-          (WorkNote, BaseReferences<_$AppDatabase, $WorkNotesTable, WorkNote>),
+          (WorkNote, $$WorkNotesTableReferences),
           WorkNote,
-          PrefetchHooks Function()
+          PrefetchHooks Function({bool noteAttachmentsRefs})
         > {
   $$WorkNotesTableTableManager(_$AppDatabase db, $WorkNotesTable table)
     : super(
@@ -5483,9 +5973,45 @@ class $$WorkNotesTableTableManager
                 isArchived: isArchived,
               ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$WorkNotesTableReferences(db, table, e),
+                ),
+              )
               .toList(),
-          prefetchHooksCallback: null,
+          prefetchHooksCallback: ({noteAttachmentsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (noteAttachmentsRefs) db.noteAttachments,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (noteAttachmentsRefs)
+                    await $_getPrefetchedData<
+                      WorkNote,
+                      $WorkNotesTable,
+                      NoteAttachment
+                    >(
+                      currentTable: table,
+                      referencedTable: $$WorkNotesTableReferences
+                          ._noteAttachmentsRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$WorkNotesTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).noteAttachmentsRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.noteId == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
         ),
       );
 }
@@ -5500,9 +6026,352 @@ typedef $$WorkNotesTableProcessedTableManager =
       $$WorkNotesTableAnnotationComposer,
       $$WorkNotesTableCreateCompanionBuilder,
       $$WorkNotesTableUpdateCompanionBuilder,
-      (WorkNote, BaseReferences<_$AppDatabase, $WorkNotesTable, WorkNote>),
+      (WorkNote, $$WorkNotesTableReferences),
       WorkNote,
-      PrefetchHooks Function()
+      PrefetchHooks Function({bool noteAttachmentsRefs})
+    >;
+typedef $$NoteAttachmentsTableCreateCompanionBuilder =
+    NoteAttachmentsCompanion Function({
+      Value<int> id,
+      required int noteId,
+      required String filePath,
+      required String originalName,
+      required String fileType,
+      Value<DateTime> createdAt,
+    });
+typedef $$NoteAttachmentsTableUpdateCompanionBuilder =
+    NoteAttachmentsCompanion Function({
+      Value<int> id,
+      Value<int> noteId,
+      Value<String> filePath,
+      Value<String> originalName,
+      Value<String> fileType,
+      Value<DateTime> createdAt,
+    });
+
+final class $$NoteAttachmentsTableReferences
+    extends
+        BaseReferences<_$AppDatabase, $NoteAttachmentsTable, NoteAttachment> {
+  $$NoteAttachmentsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $WorkNotesTable _noteIdTable(_$AppDatabase db) =>
+      db.workNotes.createAlias(
+        $_aliasNameGenerator(db.noteAttachments.noteId, db.workNotes.id),
+      );
+
+  $$WorkNotesTableProcessedTableManager get noteId {
+    final $_column = $_itemColumn<int>('note_id')!;
+
+    final manager = $$WorkNotesTableTableManager(
+      $_db,
+      $_db.workNotes,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_noteIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$NoteAttachmentsTableFilterComposer
+    extends Composer<_$AppDatabase, $NoteAttachmentsTable> {
+  $$NoteAttachmentsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get filePath => $composableBuilder(
+    column: $table.filePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get originalName => $composableBuilder(
+    column: $table.originalName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get fileType => $composableBuilder(
+    column: $table.fileType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$WorkNotesTableFilterComposer get noteId {
+    final $$WorkNotesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.noteId,
+      referencedTable: $db.workNotes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$WorkNotesTableFilterComposer(
+            $db: $db,
+            $table: $db.workNotes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$NoteAttachmentsTableOrderingComposer
+    extends Composer<_$AppDatabase, $NoteAttachmentsTable> {
+  $$NoteAttachmentsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get filePath => $composableBuilder(
+    column: $table.filePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get originalName => $composableBuilder(
+    column: $table.originalName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get fileType => $composableBuilder(
+    column: $table.fileType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$WorkNotesTableOrderingComposer get noteId {
+    final $$WorkNotesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.noteId,
+      referencedTable: $db.workNotes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$WorkNotesTableOrderingComposer(
+            $db: $db,
+            $table: $db.workNotes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$NoteAttachmentsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $NoteAttachmentsTable> {
+  $$NoteAttachmentsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get filePath =>
+      $composableBuilder(column: $table.filePath, builder: (column) => column);
+
+  GeneratedColumn<String> get originalName => $composableBuilder(
+    column: $table.originalName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get fileType =>
+      $composableBuilder(column: $table.fileType, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  $$WorkNotesTableAnnotationComposer get noteId {
+    final $$WorkNotesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.noteId,
+      referencedTable: $db.workNotes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$WorkNotesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.workNotes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$NoteAttachmentsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $NoteAttachmentsTable,
+          NoteAttachment,
+          $$NoteAttachmentsTableFilterComposer,
+          $$NoteAttachmentsTableOrderingComposer,
+          $$NoteAttachmentsTableAnnotationComposer,
+          $$NoteAttachmentsTableCreateCompanionBuilder,
+          $$NoteAttachmentsTableUpdateCompanionBuilder,
+          (NoteAttachment, $$NoteAttachmentsTableReferences),
+          NoteAttachment,
+          PrefetchHooks Function({bool noteId})
+        > {
+  $$NoteAttachmentsTableTableManager(
+    _$AppDatabase db,
+    $NoteAttachmentsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$NoteAttachmentsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$NoteAttachmentsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$NoteAttachmentsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> noteId = const Value.absent(),
+                Value<String> filePath = const Value.absent(),
+                Value<String> originalName = const Value.absent(),
+                Value<String> fileType = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => NoteAttachmentsCompanion(
+                id: id,
+                noteId: noteId,
+                filePath: filePath,
+                originalName: originalName,
+                fileType: fileType,
+                createdAt: createdAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int noteId,
+                required String filePath,
+                required String originalName,
+                required String fileType,
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => NoteAttachmentsCompanion.insert(
+                id: id,
+                noteId: noteId,
+                filePath: filePath,
+                originalName: originalName,
+                fileType: fileType,
+                createdAt: createdAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$NoteAttachmentsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({noteId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (noteId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.noteId,
+                                referencedTable:
+                                    $$NoteAttachmentsTableReferences
+                                        ._noteIdTable(db),
+                                referencedColumn:
+                                    $$NoteAttachmentsTableReferences
+                                        ._noteIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$NoteAttachmentsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $NoteAttachmentsTable,
+      NoteAttachment,
+      $$NoteAttachmentsTableFilterComposer,
+      $$NoteAttachmentsTableOrderingComposer,
+      $$NoteAttachmentsTableAnnotationComposer,
+      $$NoteAttachmentsTableCreateCompanionBuilder,
+      $$NoteAttachmentsTableUpdateCompanionBuilder,
+      (NoteAttachment, $$NoteAttachmentsTableReferences),
+      NoteAttachment,
+      PrefetchHooks Function({bool noteId})
     >;
 
 class $AppDatabaseManager {
@@ -5521,4 +6390,6 @@ class $AppDatabaseManager {
       $$TaskTagsTableTableManager(_db, _db.taskTags);
   $$WorkNotesTableTableManager get workNotes =>
       $$WorkNotesTableTableManager(_db, _db.workNotes);
+  $$NoteAttachmentsTableTableManager get noteAttachments =>
+      $$NoteAttachmentsTableTableManager(_db, _db.noteAttachments);
 }

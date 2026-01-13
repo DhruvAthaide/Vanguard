@@ -15,7 +15,8 @@ part 'app_database.g.dart';
   Tags,
   ProjectTags,
   TaskTags,
-  WorkNotes
+  WorkNotes,
+  NoteAttachments
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
