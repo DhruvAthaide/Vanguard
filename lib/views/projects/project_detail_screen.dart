@@ -11,6 +11,7 @@ import 'widgets/cyber_task_tree.dart';
 import 'widgets/cyber_kanban_board.dart';
 import 'widgets/task_editor_sheet.dart';
 import 'widgets/add_project_sheet.dart';
+import '../dialogs/export_report_dialog.dart';
 
 class ProjectDetailScreen extends ConsumerStatefulWidget {
   final Project project;
@@ -199,7 +200,12 @@ class _ProjectDetailScreenState extends ConsumerState<ProjectDetailScreen>
                                 ),
                               ),
                               onSelected: (val) async {
-                                if (val == 'edit') {
+                                if (val == 'export') {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => ExportReportDialog(projectId: widget.project.id),
+                                  );
+                                } else if (val == 'edit') {
                                   showModalBottomSheet(
                                     context: context,
                                     isScrollControlled: true,
@@ -222,6 +228,11 @@ class _ProjectDetailScreenState extends ConsumerState<ProjectDetailScreen>
                                 }
                               },
                               itemBuilder: (context) => [
+                                _buildMenuItem(
+                                  'export',
+                                  "Export Mission Report",
+                                  LucideIcons.fileOutput,
+                                ),
                                 _buildMenuItem(
                                   'edit',
                                   "Edit Parameters",
