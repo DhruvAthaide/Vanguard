@@ -1,4 +1,4 @@
-import 'dart:io';
+
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -205,11 +205,11 @@ class _ExportReportDialogState extends ConsumerState<ExportReportDialog> {
         fileName: fileName,
         type: FileType.custom,
         allowedExtensions: ['pdf', 'vgd'],
+        bytes: bytes,
       );
 
       if (outputFile != null) {
-        final file = File(outputFile);
-        await file.writeAsBytes(bytes);
+        // FilePicker handling with bytes saves the file
         if (mounted) {
            ScaffoldMessenger.of(context).showSnackBar(
              SnackBar(content: Text('Report saved to $outputFile', style: const TextStyle(color: Colors.black)), backgroundColor: CyberTheme.accent),
