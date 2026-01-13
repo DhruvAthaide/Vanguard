@@ -1,3 +1,33 @@
+# Vanguard v1.2.0: Advanced Ops Release
+
+> **"Secure. Stealthy. Superior."**
+
+This release introduces the highly anticipated **Advanced Ops** module, empowering field operatives with military-grade encryption tools, covert data sharing, and enhanced intelligence logging.
+
+## 🚀 What's New in v1.2.0
+
+### 🔐 Encrypted Mission Reports
+-   **AES-256 PDF Export**: Generate professional mission reports containing tasks, notes, and intel.
+-   **Military-Grade Encryption**: Secure your exports with a password using AES-256-GCM.
+-   **Local Processing**: All PDF generation and encryption happens on-device.
+
+### 🕵️ Dead Drop Sharing
+-   **Offline Data Transfer**: Share sensitive data securely without a network connection.
+-   **Encrypted QR Codes**: Generate compressed and encrypted QR codes for secure "optical" data transfer.
+-   **Integrated Scanner**: Built-in Dead Drop Scanner to decrypt and read incoming payloads.
+-   **Steganography Core**: Logic added for embedding data within images (UI coming in future update).
+
+### 📸 Rich Notes
+-   **Image Attachments**: You can now attach images to your field notes.
+-   **Secure Vault Storage**: Attachments are stored within the app's secure sandbox.
+
+### 🛠️ Improvements & Fixes
+-   **Fixed**: Crash when exporting PDFs on Android 10+.
+-   **Privacy**: Enhanced app security with stricter file handling.
+-   **UI**: Added "Drop" shortcut for quick sharing from the Note Editor.
+
+---
+
 # Vanguard v1.1.0: First Official Release
 
 > **"Orchestrate. Analyze. Secure."**
